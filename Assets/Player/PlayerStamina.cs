@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class PlayerStamina : MonoBehaviour
@@ -9,11 +10,11 @@ public class PlayerStamina : MonoBehaviour
 	[SerializeField] private float staminaRegenDelay = 2.0f;
 
 	private float staminaRegenTimer;
-
     private float currentStamina;
-
     public float CurrentStamina => currentStamina;
     public float MaxStamina => maxStamina;
+	
+	public static event Action<float, float> OnStaminaChanged;
 
 
 	private void Update()
@@ -26,7 +27,11 @@ public class PlayerStamina : MonoBehaviour
         currentStamina = maxStamina;
     }
 
-
+	//Boss 
+	private void StaminaChange()
+	{
+		OnStaminaChanged?.Invoke(currentStamina, maxStamina);
+	}
 
 
 
@@ -38,14 +43,19 @@ public class PlayerStamina : MonoBehaviour
 
 		currentStamina -= amount;
 		currentStamina = Mathf.Clamp(currentStamina, 0f, maxStamina);
-		
+
 		staminaRegenTimer = staminaRegenDelay;
+
+		StaminaChange();
+
 		return true;
 	}
 
 	//Aktualizuje poziom staminy
-	 public void UpdateStamina(bool isRunning, bool isMoving)
+	public void UpdateStamina(bool isRunning, bool isMoving)
 	{
+		float previousStamina = currentStamina;
+
 		if (isRunning && isMoving)
 		{
 			currentStamina -= runStaminaDrain * Time.deltaTime;
@@ -62,6 +72,12 @@ public class PlayerStamina : MonoBehaviour
 				currentStamina += staminaRegenRate * Time.deltaTime;
 			}
 		}
+
 		currentStamina = Mathf.Clamp(currentStamina, 0f, maxStamina);
+
+		if (!Mathf.Approximately(previousStamina, currentStamina))
+		{
+			StaminaChange();
+		}
 	}
 }

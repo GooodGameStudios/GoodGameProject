@@ -3,15 +3,29 @@ using UnityEngine.UI;
 
 public class StaminaUI : MonoBehaviour
 {
-    [SerializeField] private PlayerStamina playerStamina;
     [SerializeField] private Slider staminaSlider;
 
-    private void Update()
+
+    private void OnEnable()
     {
-        if (playerStamina == null || staminaSlider == null)
+        PlayerStamina.OnStaminaChanged += UpdateStaminaUI;
+    }
+
+    private void OnDisable()
+    {
+        PlayerStamina.OnStaminaChanged -= UpdateStaminaUI;
+    }
+
+	//
+    private void UpdateStaminaUI(float currentStamina, float maxStamina)
+    {
+        if (staminaSlider == null)
             return;
-		
-        staminaSlider.value =
-            playerStamina.CurrentStamina / playerStamina.MaxStamina;
+        if (maxStamina <= 0f)
+        {
+            staminaSlider.value = 0f;
+            return;
+        }
+        staminaSlider.value = currentStamina / maxStamina;
     }
 }

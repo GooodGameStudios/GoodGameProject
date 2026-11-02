@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,11 +7,13 @@ public class PlayerMovement : MonoBehaviour
 {
     private CharacterController controller;
 
+	[Header("Movement")]
     [SerializeField] private float WalkSpeed = 5.0f;
     [SerializeField] private float RunSpeed = 9.0f;
     [SerializeField] private float Gravity = -20.0f;
     [SerializeField] private float JumpHeight = 1.0f;
 
+	[Header("Climbing")]
 	[SerializeField] private LayerMask climbableLayer;
 	[SerializeField] private float climbSpeed = 3.0f;
 	[SerializeField] private float wallStickDistance = 0.5f;
@@ -76,8 +77,6 @@ public class PlayerMovement : MonoBehaviour
 			ApplyGravity();
 		}
 	}
-
-
 
 
 
