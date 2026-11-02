@@ -14,21 +14,13 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float JumpHeight = 1.0f;
 
 	[SerializeField] private LayerMask climbableLayer;
-	[SerializeField] private float climbSpeed = 3f;
+	[SerializeField] private float climbSpeed = 3.0f;
 	[SerializeField] private float wallStickDistance = 0.5f;
-	[SerializeField] private float wallJumpUpForce = 7f;
-	[SerializeField] private float wallJumpAwayForce = 5f;
+	[SerializeField] private float wallJumpUpForce = 7.0f;
+	[SerializeField] private float wallJumpAwayForce = 5.0f;
+	[SerializeField] private float staminaJumpDrain = 15.0f;
 
-	[SerializeField] private float maxStamina = 100f;
-	[SerializeField] private float runStaminaDrain = 5f;
-	[SerializeField] private float jumpStaminaCost = 20f;
-	[SerializeField] private float staminaRegenRate = 20f;
-
-	private float currentStamina;
-
-	public float CurrentStamina => currentStamina;
-	public float MaxStamina => maxStamina;
-
+	private PlayerStamina stamina;
 
     private Vector2 moveInput;
 
@@ -50,18 +42,16 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
+		
+		stamina = GetComponent<PlayerStamina>();
         controller = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-		currentStamina = maxStamina;
     }
 
 	private void Update()
 	{
-		UpdateStamina();
-
-		Debug.Log(CurrentStamina);
-
+		stamina.UpdateStamina(isRunning, moveInput.magnitude > 0.1f);
 		if (isClimbing)
 		{
 			if (wallJumpRequested)
@@ -100,7 +90,7 @@ public class PlayerMovement : MonoBehaviour
 	public void OnRun(InputAction.CallbackContext context)
 	{
 		if (context.performed)
-			isRunning = currentStamina > 0f;
+			isRunning = stamina.CurrentStamina > 0f;
 		else if (context.canceled)
 			isRunning = false;
 	}
@@ -124,7 +114,7 @@ public class PlayerMovement : MonoBehaviour
 	//Wykrywa czy gracz dotyka odpowiedniej ściany
 	private void OnControllerColliderHit(ControllerColliderHit hit)
 	{
-		if (isClimbing || currentStamina <= 0f)
+		if (isClimbing || stamina.CurrentStamina <= 0f)
 			return;
 
 		int wallLayer = 1 << hit.gameObject.layer;
@@ -143,7 +133,7 @@ public class PlayerMovement : MonoBehaviour
 	//Skok ze ściany
 	private void WallJump()
 	{
-		if (!UseStamina(jumpStaminaCost))
+		if (!stamina.UseStamina(staminaJumpDrain))
 		{
 			wallJumpRequested = false;
 			return;
@@ -192,7 +182,7 @@ public class PlayerMovement : MonoBehaviour
         }
 		if (jumpRequested)
 		{
-			if (isGrounded && UseStamina(jumpStaminaCost))
+			if (isGrounded && stamina.UseStamina(staminaJumpDrain))
 			{
 				verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
 			}
@@ -224,37 +214,4 @@ public class PlayerMovement : MonoBehaviour
 		return Physics.Raycast(origin, -climbWallNormal, wallStickDistance + 0.3f, climbableLayer, QueryTriggerInteraction.Ignore);
 	}
 
-
-	private bool UseStamina(float amount)
-	{
-		if (currentStamina < amount)
-			return false;
-
-		currentStamina -= amount;
-		currentStamina = Mathf.Clamp(currentStamina, 0f, maxStamina);
-		return true;
-	}
-
-	private void UpdateStamina()
-	{
-		bool moving = moveInput.magnitude > 0.1f;
-
-		if (isRunning && moving && !isClimbing)
-		{
-			currentStamina -= runStaminaDrain * Time.deltaTime;
-		}
-		else
-		{
-			currentStamina += staminaRegenRate * Time.deltaTime;
-		}
-
-		currentStamina = Mathf.Clamp(currentStamina, 0f, maxStamina);
-
-		if (currentStamina <= 0f)
-		{
-			isRunning = false;
-			if (isClimbing)
-				isClimbing = false;
-		}
-	}
 }

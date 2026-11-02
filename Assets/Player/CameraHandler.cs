@@ -13,13 +13,13 @@ public class CameraHandler : MonoBehaviour
     [SerializeField] private int DownCameraLookBlock = -90;
 
 
-	[SerializeField] private float walkBobFrequency = 8f;
-	[SerializeField] private float runBobFrequency = 13f;
+	[SerializeField] private float walkBobFrequency = 8.0f;
+	[SerializeField] private float runBobFrequency = 13.0f;
 
 	[SerializeField] private float walkBobAmplitude = 0.07f;
 	[SerializeField] private float runBobAmplitude = 0.2f;
 
-	[SerializeField] private float bobSmoothness = 8f;
+	[SerializeField] private float bobSmoothness = 8.0f;
 
 	private Vector3 initialCameraPosition;
 	private float bobTimer;
