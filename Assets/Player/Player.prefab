@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 690070604154652817}
   serializedVersion: 2
   m_LocalRotation: {x: -0.00000005724901, y: -0.00000011728592, z: -0.0000000029932066, w: 1}
-  m_LocalPosition: {x: -4.24671, y: 0.7600004, z: 2.1}
+  m_LocalPosition: {x: 0, y: 0.00000017881393, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -272,9 +272,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   WalkSpeed: 5
-  RunSpeed: 20
+  RunSpeed: 8
   Gravity: -20
   JumpHeight: 1
+  climbableLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  climbSpeed: 3
+  wallStickDistance: 0.5
+  jumpOffForce: 5
+  wallJumpUpForce: 7
+  wallJumpAwayForce: 5
   isRunning: 0
 --- !u!114 &9141857245041114496
 MonoBehaviour:
