@@ -19,6 +19,16 @@ public class PlayerMovement : MonoBehaviour
 	[SerializeField] private float wallJumpUpForce = 7f;
 	[SerializeField] private float wallJumpAwayForce = 5f;
 
+	[SerializeField] private float maxStamina = 100f;
+	[SerializeField] private float runStaminaDrain = 5f;
+	[SerializeField] private float jumpStaminaCost = 20f;
+	[SerializeField] private float staminaRegenRate = 20f;
+
+	private float currentStamina;
+
+	public float CurrentStamina => currentStamina;
+	public float MaxStamina => maxStamina;
+
 
     private Vector2 moveInput;
 
@@ -36,15 +46,22 @@ public class PlayerMovement : MonoBehaviour
     private bool jumpRequested;
     private bool isGrounded;
 
+
+
     private void Start()
     {
         controller = GetComponent<CharacterController>();
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+		currentStamina = maxStamina;
     }
 
 	private void Update()
 	{
+		UpdateStamina();
+
+		Debug.Log(CurrentStamina);
+
 		if (isClimbing)
 		{
 			if (wallJumpRequested)
@@ -72,6 +89,7 @@ public class PlayerMovement : MonoBehaviour
 
 
 
+
     //Daje PlayerMoving kierunek ruchu
     public void OnMove(InputAction.CallbackContext context)
     {
@@ -79,13 +97,13 @@ public class PlayerMovement : MonoBehaviour
     }
 
     //Zaczyna i kończy bieg
-    public void OnRun(InputAction.CallbackContext context)
-    {
-        if (context.performed)
-            isRunning = true;
-        else if (context.canceled)
-            isRunning = false;
-    }
+	public void OnRun(InputAction.CallbackContext context)
+	{
+		if (context.performed)
+			isRunning = currentStamina > 0f;
+		else if (context.canceled)
+			isRunning = false;
+	}
 
     //Pozwala na skos
 	public void OnJump(InputAction.CallbackContext context)
@@ -106,7 +124,7 @@ public class PlayerMovement : MonoBehaviour
 	//Wykrywa czy gracz dotyka odpowiedniej ściany
 	private void OnControllerColliderHit(ControllerColliderHit hit)
 	{
-		if (isClimbing)
+		if (isClimbing || currentStamina <= 0f)
 			return;
 
 		int wallLayer = 1 << hit.gameObject.layer;
@@ -125,19 +143,21 @@ public class PlayerMovement : MonoBehaviour
 	//Skok ze ściany
 	private void WallJump()
 	{
-		isClimbing = false;
+		if (!UseStamina(jumpStaminaCost))
+		{
+			wallJumpRequested = false;
+			return;
+		}
 
+		isClimbing = false;
 		verticalVelocity = wallJumpUpForce;
 
-		Vector3 jumpDirection =
-			climbWallNormal * wallJumpAwayForce;
-
-		controller.Move(
-			jumpDirection * Time.deltaTime
-		);
+		Vector3 jumpDirection = climbWallNormal * wallJumpAwayForce;
+		controller.Move(jumpDirection * Time.deltaTime);
 
 		wallJumpRequested = false;
 	}
+
 
 
 
@@ -170,14 +190,15 @@ public class PlayerMovement : MonoBehaviour
         {
             verticalVelocity = -2f;
         }
-        if (jumpRequested)
-        {
-            if (isGrounded)
-            {
-                verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
-            }
-            jumpRequested = false;
-        }
+		if (jumpRequested)
+		{
+			if (isGrounded && UseStamina(jumpStaminaCost))
+			{
+				verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+			}
+
+			jumpRequested = false;
+		}
         verticalVelocity += Gravity * Time.deltaTime;
 	controller.Move(Vector3.up * verticalVelocity * Time.deltaTime);
     }
@@ -193,7 +214,6 @@ public class PlayerMovement : MonoBehaviour
 		climbDirection = Vector3.ClampMagnitude(climbDirection, 1f);
 
 		controller.Move(climbDirection * climbSpeed * Time.deltaTime);
-
 		controller.Move(-climbWallNormal * wallStickDistance * Time.deltaTime);
 	}
 
@@ -201,7 +221,40 @@ public class PlayerMovement : MonoBehaviour
 	private bool IsStillTouchingWall()
 	{
 		Vector3 origin = controller.bounds.center;
-
 		return Physics.Raycast(origin, -climbWallNormal, wallStickDistance + 0.3f, climbableLayer, QueryTriggerInteraction.Ignore);
+	}
+
+
+	private bool UseStamina(float amount)
+	{
+		if (currentStamina < amount)
+			return false;
+
+		currentStamina -= amount;
+		currentStamina = Mathf.Clamp(currentStamina, 0f, maxStamina);
+		return true;
+	}
+
+	private void UpdateStamina()
+	{
+		bool moving = moveInput.magnitude > 0.1f;
+
+		if (isRunning && moving && !isClimbing)
+		{
+			currentStamina -= runStaminaDrain * Time.deltaTime;
+		}
+		else
+		{
+			currentStamina += staminaRegenRate * Time.deltaTime;
+		}
+
+		currentStamina = Mathf.Clamp(currentStamina, 0f, maxStamina);
+
+		if (currentStamina <= 0f)
+		{
+			isRunning = false;
+			if (isClimbing)
+				isClimbing = false;
+		}
 	}
 }
