@@ -16,8 +16,7 @@ public class PlayerMovement : MonoBehaviour
 	[SerializeField] private LayerMask climbableLayer;
 	[SerializeField] private float climbSpeed = 3.0f;
 	[SerializeField] private float wallStickDistance = 0.5f;
-	[SerializeField] private float wallJumpUpForce = 7.0f;
-	[SerializeField] private float wallJumpAwayForce = 5.0f;
+	[SerializeField] private float wallJumpForce = 5.0f;
 	[SerializeField] private float staminaJumpDrain = 15.0f;
 
 	private PlayerStamina stamina;
@@ -52,6 +51,10 @@ public class PlayerMovement : MonoBehaviour
 	private void Update()
 	{
 		stamina.UpdateStamina(isRunning, moveInput.magnitude > 0.1f);
+		if (stamina.CurrentStamina <= 0f)
+		{
+			isRunning = false;
+		}
 		if (isClimbing)
 		{
 			if (wallJumpRequested)
@@ -59,13 +62,11 @@ public class PlayerMovement : MonoBehaviour
 				WallJump();
 				return;
 			}
-
 			if (!IsStillTouchingWall())
 			{
 				isClimbing = false;
 				return;
 			}
-
 			ClimbingMovement();
 		}
 		else
@@ -111,6 +112,10 @@ public class PlayerMovement : MonoBehaviour
 		}
 	}
 
+
+
+
+
 	//Wykrywa czy gracz dotyka odpowiedniej ściany
 	private void OnControllerColliderHit(ControllerColliderHit hit)
 	{
@@ -140,9 +145,9 @@ public class PlayerMovement : MonoBehaviour
 		}
 
 		isClimbing = false;
-		verticalVelocity = wallJumpUpForce;
+		verticalVelocity = 7.0f;
 
-		Vector3 jumpDirection = climbWallNormal * wallJumpAwayForce;
+		Vector3 jumpDirection = climbWallNormal * wallJumpForce;
 		controller.Move(jumpDirection * Time.deltaTime);
 
 		wallJumpRequested = false;
@@ -186,12 +191,12 @@ public class PlayerMovement : MonoBehaviour
 			{
 				verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
 			}
-
 			jumpRequested = false;
 		}
         verticalVelocity += Gravity * Time.deltaTime;
 	controller.Move(Vector3.up * verticalVelocity * Time.deltaTime);
     }
+
 
 	//Poruszanie się po ścianie
 	private void ClimbingMovement()
@@ -206,6 +211,7 @@ public class PlayerMovement : MonoBehaviour
 		controller.Move(climbDirection * climbSpeed * Time.deltaTime);
 		controller.Move(-climbWallNormal * wallStickDistance * Time.deltaTime);
 	}
+
 
 	//Check
 	private bool IsStillTouchingWall()

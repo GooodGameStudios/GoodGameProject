@@ -6,7 +6,7 @@ public class PlayerStamina : MonoBehaviour
     [SerializeField] private float maxStamina = 100.0f;
     [SerializeField] private float runStaminaDrain = 15.0f;
     [SerializeField] private float staminaRegenRate = 20.0f;
-	[SerializeField] private float staminaRegenDelay = 1.0f;
+	[SerializeField] private float staminaRegenDelay = 2.0f;
 
 	private float staminaRegenTimer;
 
@@ -30,7 +30,7 @@ public class PlayerStamina : MonoBehaviour
 
 
 
-
+	//Check
 	public bool UseStamina(float amount)
 	{
 		if (currentStamina < amount)
@@ -38,12 +38,12 @@ public class PlayerStamina : MonoBehaviour
 
 		currentStamina -= amount;
 		currentStamina = Mathf.Clamp(currentStamina, 0f, maxStamina);
-
+		
 		staminaRegenTimer = staminaRegenDelay;
-
 		return true;
 	}
 
+	//Aktualizuje poziom staminy
 	 public void UpdateStamina(bool isRunning, bool isMoving)
 	{
 		if (isRunning && isMoving)
@@ -62,7 +62,6 @@ public class PlayerStamina : MonoBehaviour
 				currentStamina += staminaRegenRate * Time.deltaTime;
 			}
 		}
-
 		currentStamina = Mathf.Clamp(currentStamina, 0f, maxStamina);
 	}
 }
