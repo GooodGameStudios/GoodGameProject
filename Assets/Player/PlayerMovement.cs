@@ -16,7 +16,6 @@ public class PlayerMovement : MonoBehaviour
 	[SerializeField] private LayerMask climbableLayer;
 	[SerializeField] private float climbSpeed = 3f;
 	[SerializeField] private float wallStickDistance = 0.5f;
-	[SerializeField] private float jumpOffForce = 5f;
 	[SerializeField] private float wallJumpUpForce = 7f;
 	[SerializeField] private float wallJumpAwayForce = 5f;
 
@@ -114,7 +113,6 @@ public class PlayerMovement : MonoBehaviour
 
 		if ((climbableLayer.value & wallLayer) != 0)
 		{
-			// Sprawdzamy, czy dotknęliśmy pionowej ściany
 			if (Mathf.Abs(hit.normal.y) < 0.3f)
 			{
 				isClimbing = true;
@@ -162,8 +160,7 @@ public class PlayerMovement : MonoBehaviour
         Vector3 rayOrigin = controller.bounds.center;
 
         float rayLength = controller.bounds.extents.y + 0.30f;
-        isGrounded = Physics.Raycast(rayOrigin, Vector3.down, rayLength, ~0, QueryTriggerInteraction.Ignore
-        );
+        isGrounded = Physics.Raycast(rayOrigin, Vector3.down, rayLength, ~0, QueryTriggerInteraction.Ignore);
     }
 
     //Grawitacja
@@ -173,7 +170,6 @@ public class PlayerMovement : MonoBehaviour
         {
             verticalVelocity = -2f;
         }
-
         if (jumpRequested)
         {
             if (isGrounded)
@@ -183,19 +179,14 @@ public class PlayerMovement : MonoBehaviour
             jumpRequested = false;
         }
         verticalVelocity += Gravity * Time.deltaTime;
-        controller.Move(Vector3.up * verticalVelocity * Time.deltaTime);
+	controller.Move(Vector3.up * verticalVelocity * Time.deltaTime);
     }
 
+	//Poruszanie się po ścianie
 	private void ClimbingMovement()
 	{
-		// Kierunek góra/dół po ścianie
 		Vector3 verticalDirection = Vector3.up * moveInput.y;
-
-		// Kierunek lewo/prawo po ścianie
-		Vector3 horizontalDirection = Vector3.Cross(
-			climbWallNormal,
-			Vector3.up
-		) * moveInput.x;
+		Vector3 horizontalDirection = Vector3.Cross(climbWallNormal, Vector3.up) * moveInput.x;
 
 		Vector3 climbDirection = verticalDirection + horizontalDirection;
 
@@ -203,20 +194,14 @@ public class PlayerMovement : MonoBehaviour
 
 		controller.Move(climbDirection * climbSpeed * Time.deltaTime);
 
-		// Przyklejanie do ściany
 		controller.Move(-climbWallNormal * wallStickDistance * Time.deltaTime);
 	}
 
+	//Check
 	private bool IsStillTouchingWall()
 	{
 		Vector3 origin = controller.bounds.center;
 
-		return Physics.Raycast(
-			origin,
-			-climbWallNormal,
-			wallStickDistance + 0.3f,
-			climbableLayer,
-			QueryTriggerInteraction.Ignore
-		);
+		return Physics.Raycast(origin, -climbWallNormal, wallStickDistance + 0.3f, climbableLayer, QueryTriggerInteraction.Ignore);
 	}
 }
