@@ -255,13 +255,16 @@ GameObject:
   m_Component:
   - component: {fileID: 4995589745368401278}
   - component: {fileID: 2226059279460988961}
+  - component: {fileID: 4982293202734721840}
   - component: {fileID: 6700269715217654124}
   - component: {fileID: 252586133308983236}
   - component: {fileID: -3917837852949481566}
   - component: {fileID: 9141857245041114496}
-  - component: {fileID: 4982293202734721840}
-  - component: {fileID: 6554921072968498121}
   - component: {fileID: 640696854606673732}
+  - component: {fileID: 7889561967300743967}
+  - component: {fileID: 3978423738644890688}
+  - component: {fileID: 6903707534175657947}
+  - component: {fileID: 4700681091427587542}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -313,86 +316,6 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6700269715217654124
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1588114378868659741}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f36d254bb549c714bb3b55ac182e6471, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::CameraHandler
-  playerMovement: {fileID: 252586133308983236}
-  cameraTarget: {fileID: 5678504152076170936}
-  controller: {fileID: 2226059279460988961}
-  mouseSensitivity: 0.1
-  UpCameraLookBlock: 90
-  DownCameraLookBlock: -90
-  walkBobFrequency: 8
-  runBobFrequency: 13
-  walkBobAmplitude: 0.07
-  runBobAmplitude: 0.2
-  bobSmoothness: 8
---- !u!114 &252586133308983236
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1588114378868659741}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e052ea229b679446b9d6e2022904c01, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
-  WalkSpeed: 5
-  RunSpeed: 8
-  Gravity: -20
-  JumpHeight: 1
-  climbableLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  climbSpeed: 3
-  wallStickDistance: 0.5
-  wallJumpForce: 5
-  staminaJumpDrain: 15
-  isRunning: 0
---- !u!114 &-3917837852949481566
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1588114378868659741}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c95f7725acad7874baeb8a5b6ab66313, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerStamina
-  maxStamina: 100
-  runStaminaDrain: 15
-  staminaRegenRate: 20
-  staminaRegenDelay: 1
---- !u!114 &9141857245041114496
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1588114378868659741}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 782f94ffd76de3746a0f11db67197102, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerInteractor
-  interactionOrigin: {fileID: 895596004256488041}
-  interactDistance: 3
-  interactableLayers:
-    serializedVersion: 2
-    m_Bits: 8
 --- !u!114 &4982293202734721840
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -488,8 +411,8 @@ MonoBehaviour:
     m_ActionName: 'PlayerMovement/Dash[/Keyboard/ctrl]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6554921072968498121}
-        m_TargetAssemblyTypeName: PlayerInventory, Assembly-CSharp
+      - m_Target: {fileID: 7889561967300743967}
+        m_TargetAssemblyTypeName: InventoryHotbarInput, Assembly-CSharp
         m_MethodName: OnInventorySlot1
         m_Mode: 0
         m_Arguments:
@@ -504,8 +427,8 @@ MonoBehaviour:
     m_ActionName: 'PlayerActions/InventorySlot1[/Keyboard/1]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6554921072968498121}
-        m_TargetAssemblyTypeName: PlayerInventory, Assembly-CSharp
+      - m_Target: {fileID: 7889561967300743967}
+        m_TargetAssemblyTypeName: InventoryHotbarInput, Assembly-CSharp
         m_MethodName: OnInventorySlot2
         m_Mode: 0
         m_Arguments:
@@ -520,8 +443,8 @@ MonoBehaviour:
     m_ActionName: 'PlayerActions/InventorySlot2[/Keyboard/2]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6554921072968498121}
-        m_TargetAssemblyTypeName: PlayerInventory, Assembly-CSharp
+      - m_Target: {fileID: 7889561967300743967}
+        m_TargetAssemblyTypeName: InventoryHotbarInput, Assembly-CSharp
         m_MethodName: OnInventorySlot3
         m_Mode: 0
         m_Arguments:
@@ -536,8 +459,8 @@ MonoBehaviour:
     m_ActionName: 'PlayerActions/InventorySlot3[/Keyboard/3]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6554921072968498121}
-        m_TargetAssemblyTypeName: PlayerInventory, Assembly-CSharp
+      - m_Target: {fileID: 7889561967300743967}
+        m_TargetAssemblyTypeName: InventoryHotbarInput, Assembly-CSharp
         m_MethodName: OnInventorySlot4
         m_Mode: 0
         m_Arguments:
@@ -552,8 +475,8 @@ MonoBehaviour:
     m_ActionName: 'PlayerActions/InventorySlot4[/Keyboard/4]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6554921072968498121}
-        m_TargetAssemblyTypeName: PlayerInventory, Assembly-CSharp
+      - m_Target: {fileID: 7889561967300743967}
+        m_TargetAssemblyTypeName: InventoryHotbarInput, Assembly-CSharp
         m_MethodName: OnInventorySlot5
         m_Mode: 0
         m_Arguments:
@@ -568,8 +491,8 @@ MonoBehaviour:
     m_ActionName: 'PlayerActions/InventorySlot5[/Keyboard/5]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6554921072968498121}
-        m_TargetAssemblyTypeName: PlayerInventory, Assembly-CSharp
+      - m_Target: {fileID: 6903707534175657947}
+        m_TargetAssemblyTypeName: PlayerItemPickup, Assembly-CSharp
         m_MethodName: OnPickUpItem
         m_Mode: 0
         m_Arguments:
@@ -584,8 +507,8 @@ MonoBehaviour:
     m_ActionName: 'PlayerActions/PickUpItem[/Keyboard/e]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6554921072968498121}
-        m_TargetAssemblyTypeName: PlayerInventory, Assembly-CSharp
+      - m_Target: {fileID: 6903707534175657947}
+        m_TargetAssemblyTypeName: PlayerItemPickup, Assembly-CSharp
         m_MethodName: OnDropItem
         m_Mode: 0
         m_Arguments:
@@ -619,7 +542,7 @@ MonoBehaviour:
   m_DefaultActionMap: PlayerMovement
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 760292458497740662}
---- !u!114 &6554921072968498121
+--- !u!114 &6700269715217654124
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -628,13 +551,77 @@ MonoBehaviour:
   m_GameObject: {fileID: 1588114378868659741}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f1669f9fdd3e235469878bc0be38e30c, type: 3}
+  m_Script: {fileID: 11500000, guid: f36d254bb549c714bb3b55ac182e6471, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerInventory
-  interactor: {fileID: 9141857245041114496}
-  slotCount: 5
-  throwForce: 5
-  dropDistance: 1
+  m_EditorClassIdentifier: Assembly-CSharp::CameraHandler
+  playerMovement: {fileID: 252586133308983236}
+  cameraTarget: {fileID: 5678504152076170936}
+  controller: {fileID: 2226059279460988961}
+  mouseSensitivity: 0.1
+  UpCameraLookBlock: 90
+  DownCameraLookBlock: -90
+  walkBobFrequency: 8
+  runBobFrequency: 13
+  walkBobAmplitude: 0.07
+  runBobAmplitude: 0.2
+  bobSmoothness: 8
+--- !u!114 &252586133308983236
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1588114378868659741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e052ea229b679446b9d6e2022904c01, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
+  WalkSpeed: 5
+  RunSpeed: 8
+  Gravity: -20
+  JumpHeight: 1
+  climbableLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  climbSpeed: 3
+  wallStickDistance: 0.5
+  wallJumpForce: 5
+  staminaJumpDrain: 15
+  isRunning: 0
+--- !u!114 &-3917837852949481566
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1588114378868659741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c95f7725acad7874baeb8a5b6ab66313, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerStamina
+  maxStamina: 100
+  runStaminaDrain: 15
+  staminaRegenRate: 20
+  staminaRegenDelay: 1
+--- !u!114 &9141857245041114496
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1588114378868659741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 782f94ffd76de3746a0f11db67197102, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerInteractor
+  interactionOrigin: {fileID: 895596004256488041}
+  interactDistance: 3
+  interactableLayers:
+    serializedVersion: 2
+    m_Bits: 8
 --- !u!114 &640696854606673732
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -648,6 +635,61 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ItemViewController
   viewpoint: {fileID: 5810236843417564839}
+--- !u!114 &7889561967300743967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1588114378868659741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 12d890e5a4c065a4289296c5bf9d8c7f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InventoryHotbarInput
+  inventory: {fileID: 4700681091427587542}
+--- !u!114 &3978423738644890688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1588114378868659741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ec27bf171300df4d9007e35a512479c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ItemDropSpawner
+  throwForce: 5
+  dropDistance: 1
+--- !u!114 &6903707534175657947
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1588114378868659741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 914ad546e8452514fb532fa2cf0ba3b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerItemPickup
+  interactor: {fileID: 9141857245041114496}
+  inventory: {fileID: 4700681091427587542}
+  dropSpawner: {fileID: 3978423738644890688}
+--- !u!114 &4700681091427587542
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1588114378868659741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f40248e543003047b91fde4fc62c241, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Inventory
+  slotCount: 5
 --- !u!1 &1761627368382886885
 GameObject:
   m_ObjectHideFlags: 0
@@ -1241,7 +1283,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b1f07d79505b9d4ea42ed64fd1ba045, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::StaminaUI
-  playerStamina: {fileID: -3917837852949481566}
   staminaSlider: {fileID: 3924868802862935974}
 --- !u!1 &8004778802848484848
 GameObject:

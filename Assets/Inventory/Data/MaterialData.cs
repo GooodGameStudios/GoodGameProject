@@ -1,5 +1,6 @@
 using UnityEngine;
 
+// Dane przedmiotu, ktory mozna stackowac w jednym slocie (np. krystal, drewno).
 [CreateAssetMenu(fileName = "NewMaterial", menuName = "Inventory/Material Data")]
 public class MaterialData : ScriptableObject, IItemData
 {
