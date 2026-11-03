@@ -1,8 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-// Laczy interaktor gracza (co widzi gracz) z ekwipunkiem (Inventory) i spawnerem
-// przedmiotow (ItemDropSpawner). Caly przeplyw podnoszenia, podmiany trzymanego
+//Caly przeplyw podnoszenia, podmiany trzymanego
 // przedmiotu i upuszczania przedmiotu jest obslugiwany tutaj.
 public class PlayerItemPickup : MonoBehaviour
 {
@@ -48,23 +47,18 @@ public class PlayerItemPickup : MonoBehaviour
             return;
         }
 
-        // Nie wszystko zmiescilo sie w ekwipunku. Swap ma sens tylko gdy gracz trzyma
-        // w rece INNY przedmiot - jesli trzyma ten sam, AddItem juz zmergowal co sie dalo
-        // (w tym do trzymanego slotu), a reszta po prostu zostaje na ziemi (patrz nizej).
+        // Nie wszystko zmiescilo sie w ekwipunku. Podmiana przedmiotu z przedmiotem trzymanym w reku.
         if (inventory.ActiveSlot != null && inventory.ActiveSlot.Item != pickedItem)
         {
             SwapActiveItem(worldItem, remaining);
             return;
         }
 
-        // Gracz nic nie trzyma w rece albo trzyma ten sam przedmiot (juz zmergowany
-        // do maksimum) - reszta, ktora sie nie zmiescila, zostaje na ziemi.
+        // Gracz nic nie trzyma w rece albo trzyma ten sam przedmiot (max stack) - reszta, ktora sie nie zmiescila, zostaje na ziemi.
         worldItem.Initialize(pickedItem, remaining);
     }
 
-    // Podmienia przedmiot z aktywnego (trzymanego w rece) slotu na przedmiot ze swiata.
-    // remainingStackCount to ta czesc podnoszonego przedmiotu, ktora nie zmiescila sie
-    // normalnym AddItem i dlatego wymusila podmiane.
+    // Podmienia przedmiot z aktywnego (trzymanego w rece) slotu na przedmiot ze swiata. Logika
     private void SwapActiveItem(WorldItem worldItem, int remainingStackCount)
     {
         InventorySlot heldSlot = inventory.ActiveSlot;
@@ -78,7 +72,7 @@ public class PlayerItemPickup : MonoBehaviour
         dropSpawner.Spawn(heldSlot.Item, heldSlot.StackCount, interactor.InteractionOrigin);
 
         // Jesli po wypelnieniu nowego stacku cos jeszcze zostalo (nadmiar ponad max stack),
-        // ta reszta zostaje na ziemi w zmniejszonym obiekcie swiata.
+        // ta reszta zostaje na ziemi.
         int leftover = remainingStackCount - newStackCount;
         if (leftover <= 0)
         {
