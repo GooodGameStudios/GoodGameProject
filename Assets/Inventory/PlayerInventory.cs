@@ -60,16 +60,44 @@ public class PlayerInventory : MonoBehaviour
         if (worldItem == null || worldItem.ItemData == null) return;
 
         int added = AddItem(worldItem.ItemData, worldItem.StackCount);
-        if (added <= 0) return;
-
         int remaining = worldItem.StackCount - added;
+
         if (remaining <= 0)
+        {
+            Destroy(worldItem.gameObject);
+            return;
+        }
+
+        if (activeSlotIndex >= 0 && slots[activeSlotIndex] != null)
+        {
+            SwapActiveItem(worldItem, remaining);
+            return;
+        }
+
+        worldItem.Initialize(worldItem.ItemData, remaining);
+    }
+
+    private void SwapActiveItem(WorldItem worldItem, int remainingStackCount)
+    {
+        InventorySlot heldSlot = slots[activeSlotIndex];
+        IItemData pickedItem = worldItem.ItemData;
+
+        OnItemRemoved?.Invoke(activeSlotIndex);
+
+        int newStackCount = Mathf.Min(remainingStackCount, pickedItem.MaxStackSize);
+        slots[activeSlotIndex] = new InventorySlot { Item = pickedItem, StackCount = newStackCount };
+        OnItemAdded?.Invoke(activeSlotIndex, slots[activeSlotIndex]);
+
+        SpawnDroppedItem(heldSlot.Item, heldSlot.StackCount);
+
+        int leftover = remainingStackCount - newStackCount;
+        if (leftover <= 0)
         {
             Destroy(worldItem.gameObject);
         }
         else
         {
-            worldItem.Initialize(worldItem.ItemData, remaining);
+            worldItem.Initialize(pickedItem, leftover);
         }
     }
 
