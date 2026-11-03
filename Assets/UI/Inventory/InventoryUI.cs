@@ -9,14 +9,14 @@ public class InventoryUI : MonoBehaviour
 
     private void OnEnable()
     {
-        PlayerInventory.OnItemAdded += HandleItemAdded;
-        PlayerInventory.OnItemRemoved += HandleItemRemoved;
+        Inventory.OnItemAdded += HandleItemAdded;
+        Inventory.OnItemRemoved += HandleItemRemoved;
     }
 
     private void OnDisable()
     {
-        PlayerInventory.OnItemAdded -= HandleItemAdded;
-        PlayerInventory.OnItemRemoved -= HandleItemRemoved;
+        Inventory.OnItemAdded -= HandleItemAdded;
+        Inventory.OnItemRemoved -= HandleItemRemoved;
     }
 
     private void HandleItemAdded(int slotIndex, InventorySlot slot)

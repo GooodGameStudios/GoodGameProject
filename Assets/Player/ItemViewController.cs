@@ -10,16 +10,16 @@ public class ItemViewController : MonoBehaviour
 
     private void OnEnable()
     {
-        PlayerInventory.OnItemAdded += HandleItemAdded;
-        PlayerInventory.OnActiveSlotSelected += HandleActiveSlotSelected;
-        PlayerInventory.OnItemRemoved += HandleItemRemoved;
+        Inventory.OnItemAdded += HandleItemAdded;
+        Inventory.OnActiveSlotSelected += HandleActiveSlotSelected;
+        Inventory.OnItemRemoved += HandleItemRemoved;
     }
 
     private void OnDisable()
     {
-        PlayerInventory.OnItemAdded -= HandleItemAdded;
-        PlayerInventory.OnActiveSlotSelected -= HandleActiveSlotSelected;
-        PlayerInventory.OnItemRemoved -= HandleItemRemoved;
+        Inventory.OnItemAdded -= HandleItemAdded;
+        Inventory.OnActiveSlotSelected -= HandleActiveSlotSelected;
+        Inventory.OnItemRemoved -= HandleItemRemoved;
     }
 
     private void HandleItemAdded(int slotIndex, InventorySlot slot)
