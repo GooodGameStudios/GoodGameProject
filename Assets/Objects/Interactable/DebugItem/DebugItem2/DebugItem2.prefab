@@ -175,3 +175,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::WorldItem
   itemDataAsset: {fileID: 11400000, guid: b510cb7d6fa46c04dbdae8fdd46190e5, type: 2}
   stackCount: 1
+  poolRoot: {fileID: 8678372147411840108}
