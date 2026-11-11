@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Dialogue_TEST
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
   message: "\u017Beli Pap\u0105 fasamik tonem a selewi\r\n"
-  duration: 1
+  duration: 5

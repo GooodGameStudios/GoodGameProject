@@ -9,6 +9,7 @@ public class DialogueTrigger : MonoBehaviour
 
     private bool hasTriggered;
 
+    //Trigger =xd
     private void OnTriggerEnter(Collider other)
     {
         Debug.Log("fsdfsdfdsdfsfsd");
