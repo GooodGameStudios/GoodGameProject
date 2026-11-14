@@ -43,7 +43,7 @@ public class PlayerItemPickup : MonoBehaviour
         // Caly stack zostal dodany do ekwipunku - przedmiot ze swiata mozna usunac.
         if (remaining <= 0)
         {
-            Destroy(worldItem.gameObject);
+            WorldItemPoolManager.Instance.Release(worldItem.gameObject);
             return;
         }
 
@@ -76,7 +76,7 @@ public class PlayerItemPickup : MonoBehaviour
         int leftover = remainingStackCount - newStackCount;
         if (leftover <= 0)
         {
-            Destroy(worldItem.gameObject);
+            WorldItemPoolManager.Instance.Release(worldItem.gameObject);
         }
         else
         {

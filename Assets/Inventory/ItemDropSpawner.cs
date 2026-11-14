@@ -14,7 +14,9 @@ public class ItemDropSpawner : MonoBehaviour
         if (item.Prefab == null) return;
 
         Vector3 spawnPosition = origin.position + origin.forward * dropDistance;
-        GameObject dropped = Instantiate(item.Prefab, spawnPosition, origin.rotation);
+        GameObject dropped = WorldItemPoolManager.Instance.Get(item.Prefab);
+        dropped.transform.SetParent(null);
+        dropped.transform.SetPositionAndRotation(spawnPosition, origin.rotation);
 
         // Przekazanie informacji o przedmiocie i liczbie sztuk do nowo utworzonego obiektu.
         WorldItem worldItem = dropped.GetComponentInChildren<WorldItem>();

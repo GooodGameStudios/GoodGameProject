@@ -33,7 +33,8 @@ public class ItemViewController : MonoBehaviour
         if (slotViews.ContainsKey(slotIndex)) return;
         if (slot.Item.Prefab == null) return;
 
-        GameObject view = Instantiate(slot.Item.Prefab, viewpoint);
+        GameObject view = WorldItemPoolManager.Instance.Get(slot.Item.Prefab);
+        view.transform.SetParent(viewpoint);
         view.transform.localPosition = Vector3.zero;
         view.transform.localRotation = Quaternion.identity;
         view.SetActive(slotIndex == activeSlotIndex);
@@ -63,7 +64,7 @@ public class ItemViewController : MonoBehaviour
     {
         if (!slotViews.TryGetValue(slotIndex, out GameObject view)) return;
 
-        Destroy(view);
+        WorldItemPoolManager.Instance.Release(view);
         slotViews.Remove(slotIndex);
     }
 }

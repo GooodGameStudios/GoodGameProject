@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7603781839840455248}
+  - component: {fileID: 1711813696466086051}
   m_Layer: 3
   m_Name: DebugItem
   m_TagString: Untagged
@@ -32,6 +33,18 @@ Transform:
   - {fileID: 4867772913952685223}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1711813696466086051
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3711511498403132011}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81db8dd72f1cf4244b540861515f361e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PooledObject
 --- !u!1 &5042937412266259941
 GameObject:
   m_ObjectHideFlags: 0
@@ -174,3 +187,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WorldItem
   itemDataAsset: {fileID: 11400000, guid: 3d6bfd5c08ccd974ea5bb520ea0a81ed, type: 2}
+  stackCount: 1
+  poolRoot: {fileID: 3711511498403132011}
