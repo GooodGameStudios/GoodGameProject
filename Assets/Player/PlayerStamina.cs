@@ -17,11 +17,6 @@ public class PlayerStamina : MonoBehaviour
 	public static event Action<float, float> OnStaminaChanged;
 
 
-	private void Update()
-    {
-        Debug.Log(currentStamina);
-    }
-
     private void Awake()
     {
         currentStamina = maxStamina;
