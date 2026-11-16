@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b1938c65d30ade8488bc2ebd8b0196af
+guid: 944be11fe874bbf4bafd25268a6a4a04
 ModelImporter:
   serializedVersion: 24300
   internalIDToNameTable: []
@@ -32,38 +32,9 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: armature_01|metarig.002|climbing
-      takeName: armature_01|metarig.002|climbing
-      internalID: 6004709458445398342
-      firstFrame: 0
-      lastFrame: 49
-      wrapMode: 0
-      orientationOffsetY: 0
-      level: 0
-      cycleOffset: 0
-      loop: 0
-      hasAdditiveReferencePose: 0
-      loopTime: 1
-      loopBlend: 0
-      loopBlendOrientation: 0
-      loopBlendPositionY: 0
-      loopBlendPositionXZ: 0
-      keepOriginalOrientation: 0
-      keepOriginalPositionY: 1
-      keepOriginalPositionXZ: 0
-      heightFromFeet: 0
-      mirror: 0
-      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
-      curves: []
-      events: []
-      transformMask: []
-      maskType: 3
-      maskSource: {instanceID: 0}
-      additiveReferencePoseFrame: 0
-    - serializedVersion: 16
-      name: armature_01|metarig.002|hit_pickaxe
-      takeName: armature_01|metarig.002|hit_pickaxe
-      internalID: 8524134886610566135
+      name: f_hands_01.001|metarig.002|climbing.001
+      takeName: f_hands_01.001|metarig.002|climbing.001
+      internalID: 1207631523772744077
       firstFrame: 0
       lastFrame: 49
       wrapMode: 0
@@ -90,9 +61,38 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: armature_01|metarig.002|idle_pickaxe
-      takeName: armature_01|metarig.002|idle_pickaxe
-      internalID: -7678406765479219156
+      name: f_hands_01.001|metarig.002|hit_pickaxe
+      takeName: f_hands_01.001|metarig.002|hit_pickaxe
+      internalID: -6495704132650813789
+      firstFrame: 0
+      lastFrame: 49
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask: []
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: f_hands_01.001|metarig.002|idle_pickaxe
+      takeName: f_hands_01.001|metarig.002|idle_pickaxe
+      internalID: 4873896103003896309
       firstFrame: 0
       lastFrame: 30
       wrapMode: 0
@@ -119,9 +119,9 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: armature_01|metarig.002|pick_up
-      takeName: armature_01|metarig.002|pick_up
-      internalID: -4851977552196680737
+      name: f_hands_01.001|metarig.002|pick_up
+      takeName: f_hands_01.001|metarig.002|pick_up
+      internalID: 2988541056313701450
       firstFrame: 0
       lastFrame: 59
       wrapMode: 0
@@ -148,9 +148,9 @@ ModelImporter:
       maskSource: {instanceID: 0}
       additiveReferencePoseFrame: 0
     - serializedVersion: 16
-      name: armature_01|metarig.002|pulling_out_pickaxe
-      takeName: armature_01|metarig.002|pulling_out_pickaxe
-      internalID: 8864686594605637940
+      name: f_hands_01.001|metarig.002|pulling_out_pickaxe
+      takeName: f_hands_01.001|metarig.002|pulling_out_pickaxe
+      internalID: -2733724133004537054
       firstFrame: 0
       lastFrame: 37
       wrapMode: 0
