@@ -21,6 +21,8 @@ public class CameraHandler : MonoBehaviour
 
 	[SerializeField] private float bobSmoothness = 8.0f;
 
+	private PauseMenu pauseMenu;
+
 	private Vector3 initialCameraPosition;
 	private float bobTimer;
 
@@ -38,12 +40,16 @@ public class CameraHandler : MonoBehaviour
 
 	private void Update()
 	{
+		if (pauseMenu != null && pauseMenu.IsMenuOpen)
+			return;
 		CameraLook();
 		CameraBobbing();
-		
 	}
 
-
+	private void Awake()
+	{
+		pauseMenu = FindFirstObjectByType<PauseMenu>();
+	}
 
 
 
