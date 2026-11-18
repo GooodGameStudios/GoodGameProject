@@ -331,7 +331,19 @@ MonoBehaviour:
     m_ActionId: 534f1821-c0f2-428a-8abf-44e87aeadd47
     m_ActionName: 'PlayerMovement/Jump[/Keyboard/space]'
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 252586133308983236}
+        m_TargetAssemblyTypeName: PlayerMovement, Assembly-CSharp
+        m_MethodName: OnDash
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: beda3efa-7c25-43db-8237-593517617962
     m_ActionName: 'PlayerMovement/Dash[/Keyboard/ctrl]'
   - m_PersistentCalls:
@@ -471,7 +483,19 @@ MonoBehaviour:
     m_ActionId: c5dd31b3-f333-4924-b7f9-d37ec63fb6f2
     m_ActionName: 'PlayerActions/Heal[/Keyboard/r]'
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: 
+        m_MethodName: 
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: 
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: a630b059-c480-46a5-b9cd-cd051063f0e1
     m_ActionName: 'PlayerMenus/MainMenu[/Keyboard/escape]'
   m_NeverAutoSwitchControlSchemes: 0
@@ -525,6 +549,10 @@ MonoBehaviour:
   wallStickDistance: 0.5
   wallJumpForce: 5
   staminaJumpDrain: 15
+  dashSpeed: 15
+  dashDuration: 0.2
+  dashCooldown: 1
+  dashStaminaCost: 15
   isRunning: 0
 --- !u!114 &-3917837852949481566
 MonoBehaviour:
@@ -627,7 +655,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HandsAnimationController
   inventory: {fileID: 4700681091427587542}
-  handsAnimator: {fileID: 44179515362609439}
+  handsAnimator: {fileID: 0}
   handsCamera: {fileID: 0}
   swingTrigger: HitPickaxe
   pickUpTrigger: PickUp
@@ -660,7 +688,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WeaponHolderController
   inventory: {fileID: 4700681091427587542}
-  weaponHolder: {fileID: 4445472781273527184}
+  weaponHolder: {fileID: 0}
 --- !u!1 &5167313214710471193
 GameObject:
   m_ObjectHideFlags: 0
@@ -1189,18 +1217,8 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6033cf37ff69d3740ab2a6a3bf2c259f, type: 3}
---- !u!95 &44179515362609439 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 4531642074024075464, guid: 6033cf37ff69d3740ab2a6a3bf2c259f, type: 3}
-  m_PrefabInstance: {fileID: 4503412143875615191}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2498799695962532614 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2076951529881961169, guid: 6033cf37ff69d3740ab2a6a3bf2c259f, type: 3}
-  m_PrefabInstance: {fileID: 4503412143875615191}
-  m_PrefabAsset: {fileID: 0}
---- !u!4 &4445472781273527184 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 274201213818051143, guid: 6033cf37ff69d3740ab2a6a3bf2c259f, type: 3}
   m_PrefabInstance: {fileID: 4503412143875615191}
   m_PrefabAsset: {fileID: 0}
