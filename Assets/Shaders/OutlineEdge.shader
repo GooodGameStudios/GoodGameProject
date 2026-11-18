@@ -27,22 +27,43 @@ Shader "Custom/OutlineEdge"
             float4 _OutlineColor;
             float _OutlineThickness;
 
+            // Liczba probek na pierscieniu dylatacji - wiecej probek = gladszy
+            // (mniej "dziurawy" na ostrych rogach sylwetki) ale drozszy pass.
+            #define OUTLINE_RING_SAMPLES 12
+
             half4 frag(Varyings IN) : SV_Target
             {
                 float2 uv = IN.texcoord;
-                float2 texel = _BlitTexture_TexelSize.xy * _OutlineThickness;
+                float2 texelSize = _BlitTexture_TexelSize.xy;
 
                 float center = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_LinearClamp, uv).r;
-                float n = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_LinearClamp, uv + float2(0, texel.y)).r;
-                float s = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_LinearClamp, uv - float2(0, texel.y)).r;
-                float e = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_LinearClamp, uv + float2(texel.x, 0)).r;
-                float w = SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_LinearClamp, uv - float2(texel.x, 0)).r;
 
-                float edge = saturate(abs(center - n) + abs(center - s) + abs(center - e) + abs(center - w));
-                // Outline tylko na granicy sylwetki, nie w jej wnetrzu.
-                edge *= (1 - center);
+                // Dylatacja maski: probkujemy pierscien (dwa promienie, pelny i 60%)
+                // wokol kazdego piksela w odleglosci _OutlineThickness pikseli i
+                // bierzemy maksimum. W przeciwienstwie do pojedynczej probki N/S/E/W
+                // (stara wersja) daje to spojne PASMO o szerokosci _OutlineThickness
+                // przylegajace do sylwetki, a nie waski pierscien odsuniety od niej.
+                float dilated = center;
+                [unroll]
+                for (int i = 0; i < OUTLINE_RING_SAMPLES; i++)
+                {
+                    float angle = i * (6.2831853 / OUTLINE_RING_SAMPLES);
+                    float2 dir = float2(cos(angle), sin(angle));
 
-                return half4(_OutlineColor.rgb, edge * _OutlineColor.a);
+                    float2 offsetOuter = dir * texelSize * _OutlineThickness;
+                    float2 offsetInner = offsetOuter * 0.6;
+
+                    dilated = max(dilated, SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_LinearClamp, uv + offsetOuter).r);
+                    dilated = max(dilated, SAMPLE_TEXTURE2D_X(_BlitTexture, sampler_LinearClamp, uv + offsetInner).r);
+                }
+
+                // Pasmo outline'u = w zasiegu dylatacji, ale poza oryginalna sylwetka.
+                // smoothstep (zamiast ostrego progu/saturate) wygladza probkowanie
+                // blisko granicy sylwetki, lagodzac "skakanie" krawedzi o cala
+                // klatke pikselowa przy drobnych ruchach kamery/obiektu.
+                float band = smoothstep(0.0, 0.5, dilated - center);
+
+                return half4(_OutlineColor.rgb, band * _OutlineColor.a);
             }
             ENDHLSL
         }
