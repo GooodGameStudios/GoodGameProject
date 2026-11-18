@@ -1,0 +1,115 @@
+STAN PRAC: Outline (podswietlanie interaktywnych obiektow) - 2026-11-18
+=========================================================================
+
+KONTEKST / PO CO TO
+--------------------
+Stara metoda outline'u (Assets/Shaders/Outline.shader + Outline.mat, uzywana
+przez Highlightable.cs) dzialala jako druga przebitka tej samej siatki,
+wypychana na zewnatrz wzdluz normalnych wierzcholkow (Cull Front + extrusion
+w vertex shaderze). Dzialalo to poprawnie tylko na gladkich/zaokraglonych
+modelach. Na modelach z ostrymi katami / twardymi krawedziami (np. kilof)
+siatka ma zduplikowane wierzcholki w tym samym miejscu z roznymi normalnymi
+(hard edges), wiec wypychanie kazdego z nich w INNYM kierunku tworzylo
+widoczne szczeliny/pekniecia outline'u dokladnie na krawedziach.
+
+Zdecydowano przepisac to calkowicie na outline w PRZESTRZENI EKRANU
+(screen-space, post-process), ktory jest niezalezny od topologii/katow
+siatki. Projekt: Unity 6 (6000.x) + URP 17.3.0, Render Graph API.
+
+NOWA ARCHITEKTURA (2 passy)
+----------------------------
+1. OutlineMaskPass - rysuje TYLKO obiekty z dedykowanej warstwy "Outline"
+   jako bialy sylwetke do malej tekstury-maski (R8, czarne tlo), testujac
+   glebokosc wzgledem juz wyrenderowanej sceny (zeby obiekt zaslonie przez
+   cos innego nie "swiecil przez" przeszkode).
+2. OutlineEdgePass - fullscreen blit, ktory probkuje maske w 4 sasiednich
+   pikselach (N/S/E/W), wykrywa roznice (krawedz sylwetki) i rysuje
+   _OutlineColor z odpowiednim alpha na obraz kamery (Blend SrcAlpha
+   OneMinusSrcAlpha), tylko na granicy maski (nie w jej wnetrzu).
+
+Highlightable.cs NIE dodaje juz materialu do siatki. Zamiast tego:
+- W Awake() zapamietuje oryginalna warstwe obiektu (defaultLayer) i
+  rozwiazuje nazwe warstwy "Outline" na jej index (LayerMask.NameToLayer).
+- SetHighlighted(true/false) po prostu PRZELACZA gameObject.layer miedzy
+  defaultLayer a warstwa Outline. Zero zmian w materialach/rendererze.
+
+WAZNE: nie wolno recznie ustawiac warstwy "Outline" na obiekcie w edytorze -
+Awake() zapamieta ja jako "domyslna" i SetHighlighted(false) przestanie
+dzialac (obiekt bylby zawsze podswietlony). Obiekty maja zostac na swojej
+normalnej warstwie (np. "Interactable"), skrypt przelacza warstwe w locie.
+
+PLIKI
+-----
+- Assets/Shaders/OutlineMask.shader       (NOWY) - shader maski, bialy silhouette
+- Assets/Shaders/OutlineEdge.shader       (NOWY) - fullscreen edge-detect + blend,
+                                             uzywa Blit.hlsl z Core RP Library
+                                             (_BlitTexture / sampler_LinearClamp)
+- Assets/Shaders/OutlineRendererFeature.cs (NOWY) - ScriptableRendererFeature,
+                                             2 wewnetrzne klasy pass'ow
+                                             (OutlineMaskPass, OutlineEdgePass)
+                                             pisane pod Render Graph API (URP17)
+- Assets/Shaders/Highlightable.cs         (ZMIENIONY) - usuniete pola
+                                             outlineMaterial/outlineColor/
+                                             outlineWidth, dodane outlineLayerName
+                                             (domyslnie "Outline") + logika
+                                             przelaczania warstwy
+- Assets/Shaders/Outline.shader, Outline.mat - STARE, juz nieuzywane,
+                                             mozna usunac kiedy bedzie okazja
+- Assets/Player/PlayerInteractor.cs       - ma TYMCZASOWY Debug.Log diagnostyczny
+                                             (do usuniecia po ostatecznym dopracowaniu)
+
+SETUP W EDYTORZE (juz zrobiony i zweryfikowany)
+-------------------------------------------------
+- Warstwa "Outline" dodana w Tags & Layers (index 8, bit 256)
+- Materialy: M_OutlineMask.mat (shader Custom/OutlineMask, bez parametrow),
+  M_OutlineEdge.mat (shader Custom/OutlineEdge, _OutlineColor + _OutlineThickness)
+- Assets/Settings/PC_Renderer.asset -> Renderer Features -> "Outline Renderer
+  Feature" dodany, Enabled, Outline Layer = Outline, Mask Material =
+  M_OutlineMask, Edge Material = M_OutlineEdge
+- Potwierdzone: PC_RPAsset -> PC_Renderer, GraphicsSettings.m_CustomRenderPipeline
+  -> PC_RPAsset, QualitySettings "PC" (m_CurrentQuality=1) bez override'u
+  render pipeline per-level. Caly lancuch wiazania assetow jest poprawny.
+
+NAPOTKANE I NAPRAWIONE BUGI (w trakcie debugowania)
+------------------------------------------------------
+1. Render Graph agresywnie cullowal obie przebitki (pass wyglada jakby
+   nic nie robil, Frame Debugger pusty) -> naprawione przez jawne
+   builder.AllowPassCulling(false) na obu passach.
+2. GLOWNY bug: OutlineMaskPass filtrowal renderery po ShaderTagId
+   "SRPDefaultUnlit", ale normalny material kilofa (URP/Lit) nie ma
+   przebitki z takim tagiem (ma UniversalForward/UniversalForwardOnly).
+   RendererList wychodzil wiec PUSTY mimo poprawnej warstwy obiektu -
+   kod sie wykonywal bez bledow (DrawRendererList naprawde byl wolany),
+   ale nie mial czego rysowac. Naprawione przez dodanie dodatkowych
+   tagow: drawingSettings.SetShaderPassName(1, "UniversalForward") i
+   (2, "UniversalForwardOnly") obok domyslnego SRPDefaultUnlit.
+   TO BYLA OSTATECZNA PRZYCZYNA problemu "nic sie nie podswietla".
+
+Metoda debugowania ktora do tego doprowadzila: dodanie Debug.Log w
+Highlightable.Awake/SetHighlighted (potwierdzenie ze warstwa realnie
+sie zmienia -> dzialalo), potem w OutlineRendererFeature.Create/
+AddRenderPasses/RecordRenderGraph/RenderFunc (potwierdzenie ze caly
+lancuch C# wykonuje sie bez wyjatkow -> dzialalo), co zawezilo problem
+do samej logiki filtrowania RendererList.
+
+AKTUALNY STAN
+-------------
+DZIALA - outline w przestrzeni ekranu renderuje sie poprawnie i rozwiazuje
+pierwotny problem (dziala tez na modelach o ostrych katach, bo nie zalezy
+od normalnych siatki).
+
+Uzytkownik zglosil: "sa niewielkie niedociagniecia jezeli chodzi o sam
+outline" - BEZ sprecyzowania jakie dokladnie. DO ZROBIENIA NASTEPNYM
+RAZEM: zapytac uzytkownika co konkretnie wyglada nie tak (grubosc?
+kolor/alpha? drganie krawedzi? timing wzgledem animacji dloni/kamery?
+cos innego?) i to dopracowac.
+
+SPRZATANIE DO ZROBIENIA (nizszy priorytet, po dopracowaniu wizualiow)
+------------------------------------------------------------------------
+- [ZROBIONE] Usuniete tymczasowe Debug.Log z PlayerInteractor.cs,
+  Highlightable.cs i OutlineRendererFeature.cs.
+- Rozwazyc usuniecie nieuzywanych juz Assets/Shaders/Outline.shader
+  i Outline.mat (stara metoda, zastapiona)
+- Stare, osierocone dane serializowane w prefabach z czasow starego
+  Highlightable (pola outlineMaterial/outlineColor/outlineWidth) znikna
+  same przy nastepnym zapisie danego prefaba - nic nie trzeba robic recznie

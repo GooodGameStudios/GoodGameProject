@@ -44,8 +44,8 @@ GameObject:
   - component: {fileID: 8547911597512794504}
   - component: {fileID: 4674867591442756477}
   - component: {fileID: 4321389656024933225}
-  - component: {fileID: 6800414280541046748}
   - component: {fileID: 9121278376954565564}
+  - component: {fileID: 4236892920247046064}
   m_Layer: 3
   m_Name: Cube
   m_TagString: Untagged
@@ -146,21 +146,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6800414280541046748
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8923958792269006118}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 68870bb8c2398df479987905bb0ccdf8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Highlightable
-  outlineMaterial: {fileID: 2100000, guid: f3b6a1d2c4e54af7b8d9e0c1a2b3c4d5, type: 2}
-  outlineColor: {r: 0.6, g: 0.6, b: 0.2, a: 1}
-  outlineWidth: 0.03
 --- !u!114 &9121278376954565564
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -176,3 +161,16 @@ MonoBehaviour:
   itemDataAsset: {fileID: 11400000, guid: b510cb7d6fa46c04dbdae8fdd46190e5, type: 2}
   stackCount: 1
   poolRoot: {fileID: 8678372147411840108}
+--- !u!114 &4236892920247046064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8923958792269006118}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68870bb8c2398df479987905bb0ccdf8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Highlightable
+  outlineLayerName: Outline
