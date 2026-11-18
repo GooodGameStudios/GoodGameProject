@@ -12,5 +12,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c8cd7c92e7ee604696f26091c79ff58, type: 3}
   m_Name: Dialogue_TEST
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
-  message: "\u017Beli Pap\u0105 fasamik tonem a selewi\r\n"
-  duration: 5
+  lines:
+  - message: "\u017Beli Pap\u0105 fasamik tonem a selewi\r\n"
+    duration: 3
+  - message: Szukametetele pakhawi a sawi
+    duration: 1
+  - message: "\u017Bimemea fe akodemate m\u0142a pfu"
+    duration: 1
+  - message: Akode ma e rahtyny nas na
+    duration: 1
+  - message: "S\u0105\u017Cyno Rapapadziej"
+    duration: 5

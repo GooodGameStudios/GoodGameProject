@@ -1,14 +1,43 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 public class PauseMenu : MonoBehaviour
 {
     [SerializeField] private GameObject pauseMenuUI;
     [SerializeField] private GameObject[] windowsToHide;
 
+    [SerializeField] private InputActionAsset inputActions;
+
+    private InputAction pauseAction;
+
     private bool isMenuOpen = false;
     private bool[] previousWindowStates;
+
     public bool IsMenuOpen => isMenuOpen;
+
+    private void Awake()
+    {
+        pauseAction = inputActions.FindActionMap("PlayerMenus").FindAction("MainMenu");
+    }
+
+    private void OnEnable()
+    {
+        if (pauseAction != null)
+        {
+            pauseAction.performed += OnPause;
+            pauseAction.Enable();
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (pauseAction != null)
+        {
+            pauseAction.performed -= OnPause;
+            pauseAction.Disable();
+        }
+    }
 
     private void Start()
     {
@@ -17,12 +46,9 @@ public class PauseMenu : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
     }
 
-    private void Update()
+    private void OnPause(InputAction.CallbackContext context)
     {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            TogglePauseMenu();
-        }
+        TogglePauseMenu();
     }
 
     public void TogglePauseMenu()
@@ -57,6 +83,7 @@ public class PauseMenu : MonoBehaviour
         for (int i = 0; i < windowsToHide.Length; i++)
         {
             if (windowsToHide[i] == null) continue;
+
             windowsToHide[i].SetActive(previousWindowStates[i]);
         }
         UpdateCursor();
@@ -69,7 +96,6 @@ public class PauseMenu : MonoBehaviour
             ? CursorLockMode.None
             : CursorLockMode.Locked;
     }
-
 
 
     public void LoadLastSave()
