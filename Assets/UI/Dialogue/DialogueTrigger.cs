@@ -9,15 +9,16 @@ public class DialogueTrigger : MonoBehaviour
 
     private bool hasTriggered;
 
-    //Trigger =xd
+    //trigger
     private void OnTriggerEnter(Collider other)
     {
         Debug.Log("fsdfsdfdsdfsfsd");
-        if (!other.CompareTag("Player")) return;
-        if (hasTriggered) return;
+        if (!other.CompareTag("Player")) 
+            return;
+        if (hasTriggered)
+            return;
 
         dialogueUI.ShowDialogue(dialogue);
-
         hasTriggered = true;
     }
 }

@@ -1204,6 +1204,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1503716994014378688, guid: a724de94600c8744ebc8c18d66d91b48, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2338733925518873674, guid: a724de94600c8744ebc8c18d66d91b48, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -1235,6 +1239,14 @@ PrefabInstance:
     - target: {fileID: 4427554312266850089, guid: a724de94600c8744ebc8c18d66d91b48, type: 3}
       propertyPath: m_AdditionalShaderChannelsFlag
       value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 5922850152985330513, guid: a724de94600c8744ebc8c18d66d91b48, type: 3}
+      propertyPath: m_AnchorMax.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5922850152985330513, guid: a724de94600c8744ebc8c18d66d91b48, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5927889156513732846, guid: a724de94600c8744ebc8c18d66d91b48, type: 3}
       propertyPath: m_AnchorMax.y

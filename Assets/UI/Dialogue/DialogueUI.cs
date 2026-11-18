@@ -13,22 +13,30 @@ public class DialogueUI : MonoBehaviour
         dialogueText.gameObject.SetActive(false);
     }
 
+
     public void ShowDialogue(DialogueData dialogue)
     {
-        if (dialogue == null) return;
+        if (dialogue == null) 
+            return;
 
         if (currentDialogue != null)
             StopCoroutine(currentDialogue);
-
         currentDialogue = StartCoroutine(DisplayDialogue(dialogue));
     }
 
+
     private IEnumerator DisplayDialogue(DialogueData dialogue)
     {
-        dialogueText.text = dialogue.message;
         dialogueText.gameObject.SetActive(true);
 
-        yield return new WaitForSeconds(dialogue.duration);
+        foreach (DialogueData.DialogueLine line in dialogue.lines)
+        {
+            if (line == null) continue;
+
+            dialogueText.text = line.message;
+
+            yield return new WaitForSeconds(line.duration);
+        }
 
         dialogueText.gameObject.SetActive(false);
         currentDialogue = null;

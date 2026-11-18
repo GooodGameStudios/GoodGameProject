@@ -7,164 +7,260 @@ public class PlayerMovement : MonoBehaviour
 {
     private CharacterController controller;
 
-	[Header("Movement")]
+    [Header("Movement")]
     [SerializeField] private float WalkSpeed = 5.0f;
     [SerializeField] private float RunSpeed = 9.0f;
     [SerializeField] private float Gravity = -20.0f;
     [SerializeField] private float JumpHeight = 1.0f;
 
-	[Header("Climbing")]
-	[SerializeField] private LayerMask climbableLayer;
-	[SerializeField] private float climbSpeed = 3.0f;
-	[SerializeField] private float wallStickDistance = 0.5f;
-	[SerializeField] private float wallJumpForce = 5.0f;
-	[SerializeField] private float staminaJumpDrain = 15.0f;
+    [Header("Climbing")]
+    [SerializeField] private LayerMask climbableLayer;
+    [SerializeField] private float climbSpeed = 3.0f;
+    [SerializeField] private float wallStickDistance = 0.5f;
+    [SerializeField] private float wallJumpForce = 5.0f;
+    [SerializeField] private float staminaJumpDrain = 15.0f;
 
-	private PlayerStamina stamina;
+    [Header("Dash")]
+    [SerializeField] private float dashSpeed = 15.0f;
+    [SerializeField] private float dashDuration = 0.2f;
+    [SerializeField] private float dashCooldown = 1.0f;
+    [SerializeField] private float dashStaminaCost = 15.0f;
+
+    private PlayerStamina stamina;
 
     private Vector2 moveInput;
 
-	private bool isClimbing;
-	private Vector3 climbWallNormal;
-	private bool wallJumpRequested;
+    private bool isClimbing;
+    private Vector3 climbWallNormal;
+    private bool wallJumpRequested;
 
-    //Do bobbingu
+    private bool jumpRequested;
+    private bool isGrounded;
+
+    private bool dashRequested;
+    private bool isDashing;
+
+    private Vector3 dashDirection;
+    private float dashTimer;
+    private float nextDashTime;
+
+    // Do bobbingu
     public bool IsMoving => moveInput.magnitude > 0.1f;
 
     private float verticalVelocity;
 
     public bool isRunning;
 
-    private bool jumpRequested;
-    private bool isGrounded;
-
-
-
     private void Start()
     {
-		
-		stamina = GetComponent<PlayerStamina>();
+        stamina = GetComponent<PlayerStamina>();
         controller = GetComponent<CharacterController>();
+
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
 
-	private void Update()
-	{
-		stamina.UpdateStamina(isRunning, moveInput.magnitude > 0.1f);
-		if (stamina.CurrentStamina <= 0f)
-		{
-			isRunning = false;
-		}
-		if (isClimbing)
-		{
-			if (wallJumpRequested)
-			{
-				WallJump();
-				return;
-			}
-			if (!IsStillTouchingWall())
-			{
-				isClimbing = false;
-				return;
-			}
-			ClimbingMovement();
-		}
-		else
-		{
-			PlayerMoving();
-			CheckGround();
-			ApplyGravity();
-		}
-	}
+    private void Update()
+    {
+        stamina.UpdateStamina(isRunning, moveInput.magnitude > 0.1f);
 
+        if (stamina.CurrentStamina <= 0f)
+        {
+            isRunning = false;
+        }
 
+        if (isClimbing)
+        {
+            dashRequested = false;
+            isDashing = false;
 
-    //Daje PlayerMoving kierunek ruchu
+            if (wallJumpRequested)
+            {
+                WallJump();
+                return;
+            }
+
+            if (!IsStillTouchingWall())
+            {
+                isClimbing = false;
+                return;
+            }
+
+            ClimbingMovement();
+        }
+        else
+        {
+            CheckGround();
+
+            if (dashRequested)
+            {
+                TryStartDash();
+                dashRequested = false;
+            }
+
+            if (isDashing)
+            {
+                DashMovement();
+            }
+            else
+            {
+                PlayerMoving();
+            }
+
+            ApplyGravity();
+        }
+    }
+
+     //Daje PlayerMoving kierunek ruchu
     public void OnMove(InputAction.CallbackContext context)
     {
         moveInput = context.ReadValue<Vector2>();
     }
 
     //Zaczyna i kończy bieg
-	public void OnRun(InputAction.CallbackContext context)
-	{
-		if (context.performed)
-			isRunning = stamina.CurrentStamina > 0f;
-		else if (context.canceled)
-			isRunning = false;
-	}
+    public void OnRun(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            isRunning = stamina.CurrentStamina > 0f;
+        else if (context.canceled)
+            isRunning = false;
+    }
 
     //Pozwala na skos
-	public void OnJump(InputAction.CallbackContext context)
-	{
-		if (context.performed)
-		{
-			if (isClimbing)
-			{
-				wallJumpRequested = true;
-			}
-			else
-			{
-				jumpRequested = true;
-			}
-		}
-	}
+    public void OnJump(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            if (isClimbing)
+            {
+                wallJumpRequested = true;
+            }
+            else if (!isDashing)
+            {
+                jumpRequested = true;
+            }
+        }
+    }
 
+    // Dashuje trigger
+    public void OnDash(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+        {
+            dashRequested = true;
+        }
+    }
 
+    ///stait upbullshit
+    private void TryStartDash()
+    {
+        if (isDashing || isClimbing)
+            return;
 
+        if (Time.time < nextDashTime)
+            return;
 
+        Vector3 direction = GetDashDirection();
 
-	//Wykrywa czy gracz dotyka odpowiedniej ściany
-	private void OnControllerColliderHit(ControllerColliderHit hit)
-	{
-		if (isClimbing || stamina.CurrentStamina <= 0f)
-			return;
+        if (direction == Vector3.zero)
+            return;
 
-		int wallLayer = 1 << hit.gameObject.layer;
+        if (!stamina.UseStamina(dashStaminaCost))
+            return;
 
-		if ((climbableLayer.value & wallLayer) != 0)
-		{
-			if (Mathf.Abs(hit.normal.y) < 0.3f)
-			{
-				isClimbing = true;
-				climbWallNormal = hit.normal;
-				verticalVelocity = 0f;
-			}
-		}
-	}
+        dashDirection = direction;
+        dashTimer = 0f;
+        isDashing = true;
 
-	//Skok ze ściany
-	private void WallJump()
-	{
-		if (!stamina.UseStamina(staminaJumpDrain))
-		{
-			wallJumpRequested = false;
-			return;
-		}
+        nextDashTime = Time.time + dashCooldown;
+    }
 
-		isClimbing = false;
-		verticalVelocity = 7.0f;
+    //Kierunek dashaa
+    private Vector3 GetDashDirection()
+    {
+        if (moveInput.sqrMagnitude < 0.01f)
+            return Vector3.zero;
+        Vector3 direction;
 
-		Vector3 jumpDirection = climbWallNormal * wallJumpForce;
-		controller.Move(jumpDirection * Time.deltaTime);
+        if (Mathf.Abs(moveInput.y) >= Mathf.Abs(moveInput.x))
+        {
+            direction = moveInput.y > 0f
+                ? transform.forward
+                : -transform.forward;
+        }
+        else
+        {
+            direction = moveInput.x > 0f
+                ? transform.right
+                : -transform.right;
+        }
 
-		wallJumpRequested = false;
-	}
+        direction.y = 0f;
+        return direction.normalized;
+    }
 
+    // Actually wykonuje dasha
+    private void DashMovement()
+    {
+        dashTimer += Time.deltaTime;
 
+        controller.Move(dashDirection * dashSpeed * Time.deltaTime);
 
+        if (dashTimer >= dashDuration)
+        {
+            isDashing = false;
+        }
+    }
 
+    // Wykrywa dotykaną ścianę
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (isClimbing || stamina.CurrentStamina <= 0f || isDashing)
+            return;
 
+        int wallLayer = 1 << hit.gameObject.layer;
+
+        if ((climbableLayer.value & wallLayer) != 0)
+        {
+            if (Mathf.Abs(hit.normal.y) < 0.3f)
+            {
+                isClimbing = true;
+                climbWallNormal = hit.normal;
+                verticalVelocity = 0f;
+            }
+        }
+    }
+
+    // Skok ze ściany
+    private void WallJump()
+    {
+        if (!stamina.UseStamina(staminaJumpDrain))
+        {
+            wallJumpRequested = false;
+            return;
+        }
+
+        isClimbing = false;
+        verticalVelocity = 7.0f;
+
+        Vector3 jumpDirection = climbWallNormal * wallJumpForce;
+        controller.Move(jumpDirection * Time.deltaTime);
+
+        wallJumpRequested = false;
+    }
 
     //Wprowadza postać w ruch
     private void PlayerMoving()
     {
-        Vector3 direction = transform.right * moveInput.x + transform.forward * moveInput.y;
+        Vector3 direction = transform.right * moveInput.x
+                          + transform.forward * moveInput.y;
+
         direction = Vector3.ClampMagnitude(direction, 1f);
 
         float currentSpeed = isRunning ? RunSpeed : WalkSpeed;
+
         Vector3 horizontalVelocity = direction * currentSpeed;
+
         controller.Move(horizontalVelocity * Time.deltaTime);
     }
 
@@ -174,49 +270,67 @@ public class PlayerMovement : MonoBehaviour
         Vector3 rayOrigin = controller.bounds.center;
 
         float rayLength = controller.bounds.extents.y + 0.30f;
-        isGrounded = Physics.Raycast(rayOrigin, Vector3.down, rayLength, ~0, QueryTriggerInteraction.Ignore);
+
+        isGrounded = Physics.Raycast(
+            rayOrigin,
+            Vector3.down,
+            rayLength,
+            ~0,
+            QueryTriggerInteraction.Ignore
+        );
     }
 
-    //Grawitacja
+    // Grawitacja
     private void ApplyGravity()
     {
         if (isGrounded && verticalVelocity < 0f)
         {
             verticalVelocity = -2f;
         }
-		if (jumpRequested)
-		{
-			if (isGrounded && stamina.UseStamina(staminaJumpDrain))
-			{
-				verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
-			}
-			jumpRequested = false;
-		}
+
+        if (jumpRequested && !isDashing)
+        {
+            if (isGrounded && stamina.UseStamina(staminaJumpDrain))
+            {
+                verticalVelocity = Mathf.Sqrt(JumpHeight * -2f * Gravity);
+            }
+
+            jumpRequested = false;
+        }
+
         verticalVelocity += Gravity * Time.deltaTime;
-	controller.Move(Vector3.up * verticalVelocity * Time.deltaTime);
+
+        controller.Move(Vector3.up * verticalVelocity * Time.deltaTime);
     }
 
+    // Poruszanie się po ścianie
+    private void ClimbingMovement()
+    {
+        Vector3 verticalDirection = Vector3.up * moveInput.y;
 
-	//Poruszanie się po ścianie
-	private void ClimbingMovement()
-	{
-		Vector3 verticalDirection = Vector3.up * moveInput.y;
-		Vector3 horizontalDirection = Vector3.Cross(climbWallNormal, Vector3.up) * moveInput.x;
+        Vector3 horizontalDirection =
+            Vector3.Cross(climbWallNormal, Vector3.up) * moveInput.x;
 
-		Vector3 climbDirection = verticalDirection + horizontalDirection;
+        Vector3 climbDirection = verticalDirection + horizontalDirection;
 
-		climbDirection = Vector3.ClampMagnitude(climbDirection, 1f);
+        climbDirection = Vector3.ClampMagnitude(climbDirection, 1f);
 
-		controller.Move(climbDirection * climbSpeed * Time.deltaTime);
-		controller.Move(-climbWallNormal * wallStickDistance * Time.deltaTime);
-	}
+        controller.Move(climbDirection * climbSpeed * Time.deltaTime);
 
+        controller.Move(-climbWallNormal * wallStickDistance * Time.deltaTime);
+    }
 
-	//Check
-	private bool IsStillTouchingWall()
-	{
-		Vector3 origin = controller.bounds.center;
-		return Physics.Raycast(origin, -climbWallNormal, wallStickDistance + 0.3f, climbableLayer, QueryTriggerInteraction.Ignore);
-	}
+   //Check
+    private bool IsStillTouchingWall()
+    {
+        Vector3 origin = controller.bounds.center;
 
+        return Physics.Raycast(
+            origin,
+            -climbWallNormal,
+            wallStickDistance + 0.3f,
+            climbableLayer,
+            QueryTriggerInteraction.Ignore
+        );
+    }
 }
