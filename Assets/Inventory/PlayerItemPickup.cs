@@ -12,6 +12,11 @@ public class PlayerItemPickup : MonoBehaviour
     // Wywolywane, gdy graczowi faktycznie udalo sie dodac przedmiot ze swiata do ekwipunku.
     public static event System.Action OnItemPickedUp;
 
+    // Wywolywane, gdy przedmiot trzymany w reku zostaje fizycznie wyrzucony w swiat
+    // (upuszczenie albo podmiana przy podnoszeniu) - w odroznieniu od zwyklego schowania
+    // na hotbarze, model w reku powinien zniknac od razu, bez czekania na animacje chowania.
+    public static event System.Action OnHeldItemDropped;
+
     // Callback z Input Systemu - wywolywany po wcisnieciu klawisza podniesienia przedmiotu.
     public void OnPickUpItem(InputAction.CallbackContext context)
     {
@@ -80,6 +85,7 @@ public class PlayerItemPickup : MonoBehaviour
 
         // Dotychczas trzymany przedmiot zostaje wyrzucony w swiat.
         dropSpawner.Spawn(heldSlot.Item, heldSlot.StackCount, interactor.InteractionOrigin);
+        OnHeldItemDropped?.Invoke();
 
         // Jesli po wypelnieniu nowego stacku cos jeszcze zostalo (nadmiar ponad max stack),
         // ta reszta zostaje na ziemi.
@@ -104,6 +110,7 @@ public class PlayerItemPickup : MonoBehaviour
         if (slot == null) return;
 
         dropSpawner.Spawn(slot.Item, slot.StackCount, interactor.InteractionOrigin);
+        OnHeldItemDropped?.Invoke();
 
         // Oproznia reke - slot jest teraz pusty, nie powinien zostac aktywny/trzymany.
         inventory.SelectSlot(activeIndex);

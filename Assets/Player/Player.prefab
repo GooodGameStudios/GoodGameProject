@@ -655,7 +655,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HandsAnimationController
   inventory: {fileID: 4700681091427587542}
-  handsAnimator: {fileID: 0}
+  handsAnimator: {fileID: 264153484960280200}
   handsCamera: {fileID: 0}
   swingTrigger: HitPickaxe
   pickUpTrigger: PickUp
@@ -688,7 +688,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::WeaponHolderController
   inventory: {fileID: 4700681091427587542}
-  weaponHolder: {fileID: 0}
+  weaponHolder: {fileID: 4021951116232854667}
 --- !u!1 &5167313214710471193
 GameObject:
   m_ObjectHideFlags: 0
@@ -1217,8 +1217,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6033cf37ff69d3740ab2a6a3bf2c259f, type: 3}
+--- !u!95 &264153484960280200 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 4455506224097511263, guid: 6033cf37ff69d3740ab2a6a3bf2c259f, type: 3}
+  m_PrefabInstance: {fileID: 4503412143875615191}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &2498799695962532614 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2076951529881961169, guid: 6033cf37ff69d3740ab2a6a3bf2c259f, type: 3}
+  m_PrefabInstance: {fileID: 4503412143875615191}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &4021951116232854667 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 697919709725156700, guid: 6033cf37ff69d3740ab2a6a3bf2c259f, type: 3}
   m_PrefabInstance: {fileID: 4503412143875615191}
   m_PrefabAsset: {fileID: 0}
