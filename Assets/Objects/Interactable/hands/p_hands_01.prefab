@@ -224,6 +224,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: p_pickaxe_01
       objectReference: {fileID: 0}
+    - target: {fileID: 8977043314799483984, guid: c045d6e96b28aee42aca7ac11bdfb89d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
