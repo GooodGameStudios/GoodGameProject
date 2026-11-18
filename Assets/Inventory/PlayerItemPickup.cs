@@ -97,11 +97,15 @@ public class PlayerItemPickup : MonoBehaviour
     // Usuwa przedmiot z aktywnego slotu i wyrzuca go do swiata gry.
     private void DropActiveItem()
     {
-        if (inventory.ActiveSlotIndex < 0) return;
+        int activeIndex = inventory.ActiveSlotIndex;
+        if (activeIndex < 0) return;
 
-        InventorySlot slot = inventory.RemoveSlot(inventory.ActiveSlotIndex);
+        InventorySlot slot = inventory.RemoveSlot(activeIndex);
         if (slot == null) return;
 
         dropSpawner.Spawn(slot.Item, slot.StackCount, interactor.InteractionOrigin);
+
+        // Oproznia reke - slot jest teraz pusty, nie powinien zostac aktywny/trzymany.
+        inventory.SelectSlot(activeIndex);
     }
 }

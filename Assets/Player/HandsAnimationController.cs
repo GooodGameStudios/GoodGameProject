@@ -7,10 +7,12 @@ using UnityEngine.InputSystem;
 [RequireComponent(typeof(PlayerInput))]
 public class HandsAnimationController : MonoBehaviour
 {
+    [SerializeField] private Inventory inventory;
     [SerializeField] private Animator handsAnimator;
     [SerializeField] private GameObject handsCamera;
-    [SerializeField] private string swingTrigger = "Swing";
+    [SerializeField] private string swingTrigger = "HitPickaxe";
     [SerializeField] private string pickUpTrigger = "PickUp";
+    [SerializeField] private string pullPickaxeTrigger = "PullPickaxe";
 
     private void Awake()
     {
@@ -20,11 +22,23 @@ public class HandsAnimationController : MonoBehaviour
     private void OnEnable()
     {
         PlayerItemPickup.OnItemPickedUp += HandleItemPickedUp;
+        Inventory.OnActiveSlotSelected += HandleActiveSlotSelected;
     }
 
     private void OnDisable()
     {
         PlayerItemPickup.OnItemPickedUp -= HandleItemPickedUp;
+        Inventory.OnActiveSlotSelected -= HandleActiveSlotSelected;
+    }
+
+    // Uruchamiane po wybraniu slotu na hotbarze - reka pojawia sie (lub chowa),
+    // w zaleznosci od tego, czy nowo wybrany slot trzyma narzedzie typu WeaponData.
+    private void HandleActiveSlotSelected(int slotIndex)
+    {
+        bool hasWeapon = inventory.ActiveSlot?.Item is WeaponData;
+
+        if (handsCamera != null) handsCamera.SetActive(hasWeapon);
+        if (hasWeapon && handsAnimator != null) handsAnimator.SetTrigger(pullPickaxeTrigger);
     }
 
     // Wywolywane przez PlayerInput (Send Messages) na akcji "Attack".
