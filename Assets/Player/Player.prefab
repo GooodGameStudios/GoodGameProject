@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 690070604154652817}
   serializedVersion: 2
   m_LocalRotation: {x: -0.00000005724901, y: -0.00000011728592, z: -0.0000000029932066, w: 1}
-  m_LocalPosition: {x: 0, y: 0.00000017881393, z: 0}
+  m_LocalPosition: {x: -3.02716, y: -5.49, z: 4.2667217}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -190,6 +190,7 @@ GameObject:
   - component: {fileID: 6903707534175657947}
   - component: {fileID: 4700681091427587542}
   - component: {fileID: 8030104956668902033}
+  - component: {fileID: 7776520026460332117}
   - component: {fileID: 3511526551297887182}
   m_Layer: 0
   m_Name: Player
@@ -446,7 +447,19 @@ MonoBehaviour:
     m_ActionId: 97e912b8-1a38-40c1-ac1f-de20895c1e19
     m_ActionName: 'PlayerActions/DropItem[/Keyboard/q]'
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 7776520026460332117}
+        m_TargetAssemblyTypeName: PlayerAttack, Assembly-CSharp
+        m_MethodName: OnAttack
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: b8b9aeeb-377b-4e94-bd01-9624417498dc
     m_ActionName: 'PlayerActions/Attack[/Mouse/leftButton]'
   - m_PersistentCalls:
@@ -619,6 +632,21 @@ MonoBehaviour:
   swingTrigger: HitPickaxe
   pickUpTrigger: PickUp
   pullPickaxeTrigger: PullPickaxe
+--- !u!114 &7776520026460332117
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1588114378868659741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4fdca80df631879448e544398f4bd976, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
+  interactor: {fileID: 9141857245041114496}
+  inventory: {fileID: 4700681091427587542}
+  attackCooldown: 0.6
 --- !u!114 &3511526551297887182
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -777,7 +805,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5385577626200713381}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1

@@ -1,10 +1,8 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 // Odtwarza animacje rak gracza (f_hands_01) w odpowiedzi na akcje gracza
 // i zarzadza widocznoscia modelu rak oraz dedykowanej HandsCamera - obie
 // sa wylaczone na starcie i wlaczane dopiero przy pierwszym podniesieniu przedmiotu.
-[RequireComponent(typeof(PlayerInput))]
 public class HandsAnimationController : MonoBehaviour
 {
     [SerializeField] private Inventory inventory;
@@ -23,12 +21,14 @@ public class HandsAnimationController : MonoBehaviour
     {
         PlayerItemPickup.OnItemPickedUp += HandleItemPickedUp;
         Inventory.OnActiveSlotSelected += HandleActiveSlotSelected;
+        PlayerAttack.OnAttackPerformed += HandleAttackPerformed;
     }
 
     private void OnDisable()
     {
         PlayerItemPickup.OnItemPickedUp -= HandleItemPickedUp;
         Inventory.OnActiveSlotSelected -= HandleActiveSlotSelected;
+        PlayerAttack.OnAttackPerformed -= HandleAttackPerformed;
     }
 
     // Uruchamiane po wybraniu slotu na hotbarze - reka pojawia sie (lub chowa),
@@ -41,10 +41,9 @@ public class HandsAnimationController : MonoBehaviour
         if (hasWeapon && handsAnimator != null) handsAnimator.SetTrigger(pullPickaxeTrigger);
     }
 
-    // Wywolywane przez PlayerInput (Send Messages) na akcji "Attack".
-    public void OnAttack(InputAction.CallbackContext context)
+    // Uruchamiane, gdy PlayerAttack faktycznie wykona atak (bron w rece, cooldown gotowy).
+    private void HandleAttackPerformed()
     {
-        if (!context.performed) return;
         if (handsAnimator == null) return;
 
         handsAnimator.SetTrigger(swingTrigger);
