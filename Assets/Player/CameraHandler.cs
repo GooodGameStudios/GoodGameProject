@@ -10,7 +10,7 @@ public class CameraHandler : MonoBehaviour
 
     [SerializeField] private float mouseSensitivity = 0.1f;
     [SerializeField] private int UpCameraLookBlock = 90;
-    [SerializeField] private int DownCameraLookBlock = -90;
+    [SerializeField] private int DownCameraLookBlock = -60;
 
 
 	[SerializeField] private float walkBobFrequency = 8.0f;

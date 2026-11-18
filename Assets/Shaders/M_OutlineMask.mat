@@ -7,8 +7,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Outline
-  m_Shader: {fileID: 4800000, guid: e7a2f8c1b3d44de4a9c2f7e6b1a0d5c3, type: 3}
+  m_Name: M_OutlineMask
+  m_Shader: {fileID: 4800000, guid: a9a0c11e8fc749b4c874acc97d40b2c9, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -19,14 +19,12 @@ Material:
   m_CustomRenderQueue: -1
   stringTagMap: {}
   disabledShaderPasses: []
-  m_LockedProperties:
-  m_BuildTextureStacks: []
-  m_AllowLocking: 1
+  m_LockedProperties: 
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs: []
     m_Ints: []
-    m_Floats:
-    - _OutlineWidth: 0
-    m_Colors:
-    - _OutlineColor: {r: 0.6, g: 0.6, b: 0.2, a: 1}
+    m_Floats: []
+    m_Colors: []
+  m_BuildTextureStacks: []
+  m_AllowLocking: 1

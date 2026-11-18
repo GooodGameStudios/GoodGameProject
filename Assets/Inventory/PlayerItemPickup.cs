@@ -9,6 +9,9 @@ public class PlayerItemPickup : MonoBehaviour
     [SerializeField] private Inventory inventory;
     [SerializeField] private ItemDropSpawner dropSpawner;
 
+    // Wywolywane, gdy graczowi faktycznie udalo sie dodac przedmiot ze swiata do ekwipunku.
+    public static event System.Action OnItemPickedUp;
+
     // Callback z Input Systemu - wywolywany po wcisnieciu klawisza podniesienia przedmiotu.
     public void OnPickUpItem(InputAction.CallbackContext context)
     {
@@ -43,7 +46,8 @@ public class PlayerItemPickup : MonoBehaviour
         // Caly stack zostal dodany do ekwipunku - przedmiot ze swiata mozna usunac.
         if (remaining <= 0)
         {
-            WorldItemPoolManager.Instance.Release(worldItem.gameObject);
+            OnItemPickedUp?.Invoke();
+            WorldItemPoolManager.Instance.Release(worldItem.gameObject);            
             return;
         }
 
@@ -51,10 +55,16 @@ public class PlayerItemPickup : MonoBehaviour
         if (inventory.ActiveSlot != null && inventory.ActiveSlot.Item != pickedItem)
         {
             SwapActiveItem(worldItem, remaining);
+            OnItemPickedUp?.Invoke();
             return;
         }
 
         // Gracz nic nie trzyma w rece albo trzyma ten sam przedmiot (max stack) - reszta, ktora sie nie zmiescila, zostaje na ziemi.
+        if (added > 0)
+        {
+            OnItemPickedUp?.Invoke();
+        }
+
         worldItem.Initialize(pickedItem, remaining);
     }
 
@@ -87,11 +97,15 @@ public class PlayerItemPickup : MonoBehaviour
     // Usuwa przedmiot z aktywnego slotu i wyrzuca go do swiata gry.
     private void DropActiveItem()
     {
-        if (inventory.ActiveSlotIndex < 0) return;
+        int activeIndex = inventory.ActiveSlotIndex;
+        if (activeIndex < 0) return;
 
-        InventorySlot slot = inventory.RemoveSlot(inventory.ActiveSlotIndex);
+        InventorySlot slot = inventory.RemoveSlot(activeIndex);
         if (slot == null) return;
 
         dropSpawner.Spawn(slot.Item, slot.StackCount, interactor.InteractionOrigin);
+
+        // Oproznia reke - slot jest teraz pusty, nie powinien zostac aktywny/trzymany.
+        inventory.SelectSlot(activeIndex);
     }
 }
