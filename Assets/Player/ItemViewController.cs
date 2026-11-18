@@ -30,6 +30,9 @@ public class ItemViewController : MonoBehaviour
     // w punkcie viewpoint i wlacza go tylko wtedy, gdy to jest aktywny slot.
     private void HandleItemAdded(int slotIndex, InventorySlot slot)
     {
+        // Bronie (WeaponData) obsluguje wylacznie WeaponHolderController - ich model
+        // pojawia sie zsynchronizowany z animacja wyciagania, a nie od razu po dodaniu do slotu.
+        if (slot.Item is WeaponData) return;
         if (slotViews.ContainsKey(slotIndex)) return;
         if (slot.Item.Prefab == null) return;
 
