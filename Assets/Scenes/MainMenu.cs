@@ -3,6 +3,8 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
+    [SerializeField] private ConfirmationPopup overwriteSavePopup;
+
     public void ResumeGame()
     {
         SaveData data = SaveSystem.Load();
@@ -23,10 +25,15 @@ public class MainMenu : MonoBehaviour
 
         if (SaveSystem.SaveExists())
         {
-            // TODO: zanim nadpiszemy istniejacy zapis, pokazac tutaj popup
-            // z potwierdzeniem ("czy na pewno chcesz nadpisac zapis?").
+            overwriteSavePopup.Show(() => StartNewGame(startingScene));
+            return;
         }
 
+        StartNewGame(startingScene);
+    }
+
+    private void StartNewGame(string startingScene)
+    {
         SaveSystem.Save(new SaveData { sceneName = startingScene });
         SceneManager.LoadScene(startingScene);
     }
