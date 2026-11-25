@@ -3,14 +3,39 @@ using UnityEngine.SceneManagement;
 
 public class MainMenu : MonoBehaviour
 {
+    [SerializeField] private ConfirmationPopup overwriteSavePopup;
+
     public void ResumeGame()
     {
-        SceneManager.LoadScene("Patryk Scene");
+        SaveData data = SaveSystem.Load();
+
+        if (data == null)
+        {
+            Debug.LogWarning("Brak zapisu do wczytania.");
+            return;
+        }
+
+        SaveSystem.SetPendingLoad(data);
+        SceneManager.LoadScene(data.sceneName);
     }
 
     public void NewGame()
     {
-        SceneManager.LoadScene("Patryk Scene");
+        const string startingScene = "KlaudiuszScene";
+
+        if (SaveSystem.SaveExists())
+        {
+            overwriteSavePopup.Show(() => StartNewGame(startingScene));
+            return;
+        }
+
+        StartNewGame(startingScene);
+    }
+
+    private void StartNewGame(string startingScene)
+    {
+        SaveSystem.Save(new SaveData { sceneName = startingScene });
+        SceneManager.LoadScene(startingScene);
     }
 
     public void Settings()

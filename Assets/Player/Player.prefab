@@ -29,7 +29,7 @@ Transform:
   m_GameObject: {fileID: 690070604154652817}
   serializedVersion: 2
   m_LocalRotation: {x: -0.00000005724901, y: -0.00000011728592, z: -0.0000000029932066, w: 1}
-  m_LocalPosition: {x: -3.02716, y: -5.49, z: 4.2667217}
+  m_LocalPosition: {x: 0, y: 0.00000017881393, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -182,6 +182,10 @@ GameObject:
   - component: {fileID: 2226059279460988961}
   - component: {fileID: 4982293202734721840}
   - component: {fileID: 6700269715217654124}
+  - component: {fileID: 3145251585995911330}
+  - component: {fileID: 1910693300549568739}
+  - component: {fileID: 1729779245346667249}
+  - component: {fileID: 684311167346592128}
   - component: {fileID: 252586133308983236}
   - component: {fileID: -3917837852949481566}
   - component: {fileID: 9141857245041114496}
@@ -526,6 +530,62 @@ MonoBehaviour:
   walkBobAmplitude: 0.07
   runBobAmplitude: 0.2
   bobSmoothness: 8
+--- !u!114 &3145251585995911330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1588114378868659741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e36db19f244566a44aef25197ac00908, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerSaveDataProvider
+  cameraHandler: {fileID: 6700269715217654124}
+  stamina: {fileID: -3917837852949481566}
+--- !u!114 &1910693300549568739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1588114378868659741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c6092ae9f2dcb0438ecfc6e8f2a834d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerSaveDataReceiver
+  controller: {fileID: 2226059279460988961}
+  cameraHandler: {fileID: 6700269715217654124}
+  stamina: {fileID: -3917837852949481566}
+--- !u!114 &1729779245346667249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1588114378868659741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60e4a2c13ffb4ff4e8546164adad5346, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InventorySaveDataProvider
+  inventory: {fileID: 4700681091427587542}
+--- !u!114 &684311167346592128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1588114378868659741}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8f6317e941e68449addbfb078368046, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::InventorySaveDataReceiver
+  inventory: {fileID: 4700681091427587542}
+  itemDatabase: {fileID: 11400000, guid: 6670e3f85030c13449db462edbc03a4e, type: 2}
 --- !u!114 &252586133308983236
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -656,10 +716,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::HandsAnimationController
   inventory: {fileID: 4700681091427587542}
   handsAnimator: {fileID: 264153484960280200}
-  handsCamera: {fileID: 0}
   swingTrigger: HitPickaxe
   pickUpTrigger: PickUp
   pullPickaxeTrigger: PullPickaxe
+  hidePickaxeTrigger: HidePickaxe
 --- !u!114 &7776520026460332117
 MonoBehaviour:
   m_ObjectHideFlags: 0

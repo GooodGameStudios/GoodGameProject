@@ -29,6 +29,9 @@ public class CameraHandler : MonoBehaviour
     private float cameraRotationX;
     private Vector2 lookInput;
 
+    // Aktualne pochylenie kamery gora/dol - do zapisania w PlayerSaveData.
+    public float CameraPitch => cameraRotationX;
+
 
 
 
@@ -57,6 +60,17 @@ public class CameraHandler : MonoBehaviour
     public void OnLook(InputAction.CallbackContext context)
     {
         lookInput = context.ReadValue<Vector2>();
+    }
+
+    // Ustawia pochylenie kamery gora/dol na konkretna wartosc (np. przy wczytywaniu zapisu).
+    public void SetCameraPitch(float pitch)
+    {
+        cameraRotationX = Mathf.Clamp(pitch, DownCameraLookBlock, UpCameraLookBlock);
+
+        if (cameraTarget != null)
+        {
+            cameraTarget.localRotation = Quaternion.Euler(cameraRotationX, 0f, 0f);
+        }
     }
 
 

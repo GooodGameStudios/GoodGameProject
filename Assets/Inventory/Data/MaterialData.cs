@@ -4,11 +4,13 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "NewMaterial", menuName = "Inventory/Material Data")]
 public class MaterialData : ScriptableObject, IItemData
 {
+    [SerializeField] private string itemId;
     [SerializeField] private string itemName;
     [SerializeField] private Sprite icon;
     [SerializeField] private int maxStackSize = 1;
     [SerializeField] private GameObject prefab;
 
+    public string ItemId => itemId;
     public string ItemName => itemName;
     public Sprite Icon => icon;
     public int MaxStackSize => maxStackSize;

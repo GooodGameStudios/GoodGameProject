@@ -30,6 +30,14 @@ public class PlayerStamina : MonoBehaviour
 
 
 
+	// Ustawia aktualna stamine na konkretna wartosc (np. przy wczytywaniu zapisu),
+	// bez przechodzenia przez normalne zuzycie/regeneracje.
+	public void SetStamina(float amount)
+	{
+		currentStamina = Mathf.Clamp(amount, 0f, maxStamina);
+		StaminaChange();
+	}
+
 	//Check
 	public bool UseStamina(float amount)
 	{
