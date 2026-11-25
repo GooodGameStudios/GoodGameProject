@@ -9,6 +9,8 @@ public class SaveData
     public string sceneName;
 
     public PlayerSaveData player = new PlayerSaveData();
+
+    public InventorySaveData inventory = new InventorySaveData();
 }
 
 // Dane gracza potrzebne do przywrocenia jego stanu po wczytaniu zapisu.
@@ -24,4 +26,19 @@ public class PlayerSaveData
     public float cameraPitch;
 
     public float currentStamina;
+}
+
+// Zawartosc calego ekwipunku - jeden wpis na slot, w tej samej kolejnosci co Inventory.GetSlot.
+[System.Serializable]
+public class InventorySaveData
+{
+    public InventorySlotSaveData[] slots = new InventorySlotSaveData[0];
+}
+
+// Zawartosc jednego slotu. itemName == null/puste oznacza pusty slot.
+[System.Serializable]
+public class InventorySlotSaveData
+{
+    public string itemName;
+    public int stackCount;
 }

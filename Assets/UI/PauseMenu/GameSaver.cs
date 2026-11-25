@@ -14,42 +14,54 @@ public class GameSaver : MonoBehaviour
     private void OnEnable()
     {
         PlayerSaveDataProvider.OnPlayerDataCaptured += HandlePlayerDataCaptured;
+        InventorySaveDataProvider.OnInventoryDataCaptured += HandleInventoryDataCaptured;
     }
 
     private void OnDisable()
     {
         PlayerSaveDataProvider.OnPlayerDataCaptured -= HandlePlayerDataCaptured;
+        InventorySaveDataProvider.OnInventoryDataCaptured -= HandleInventoryDataCaptured;
     }
 
-    // Ustawiane w HandlePlayerDataCaptured - pozwala wykryc, czy ktokolwiek
-    // odpowiedzial na OnSaveRequested (patrz ostrzezenie w SaveGame).
-    private bool requestWasHandled;
+    // Wypelniane synchronicznie w ramach OnSaveRequested?.Invoke() w SaveGame -
+    // kazdy provider odpowiada wlasnymi danymi, zanim zapis trafi na dysk.
+    private PlayerSaveData capturedPlayerData;
+    private InventorySaveData capturedInventoryData;
+    private bool playerDataWasCaptured;
 
     // Podpinane pod przycisk "Save" w UI.
     public void SaveGame()
     {
-        requestWasHandled = false;
+        playerDataWasCaptured = false;
+        capturedInventoryData = null;
 
         OnSaveRequested?.Invoke();
 
-        if (!requestWasHandled)
+        if (!playerDataWasCaptured)
         {
             Debug.LogWarning("Nikt nie odpowiedzial na zadanie zapisu - sprawdz, czy PlayerSaveDataProvider jest obecny i aktywny w scenie.");
+            return;
         }
-    }
-
-    // Wywolywane synchronicznie w ramach OnSaveRequested?.Invoke() powyzej -
-    // PlayerSaveDataProvider odpowiada na zadanie wlasnymi danymi.
-    private void HandlePlayerDataCaptured(PlayerSaveData playerData)
-    {
-        requestWasHandled = true;
 
         SaveData data = new SaveData
         {
             sceneName = SceneManager.GetActiveScene().name,
-            player = playerData
+            player = capturedPlayerData,
+            // InventorySaveDataProvider jest opcjonalny - jego brak w scenie nie blokuje zapisu.
+            inventory = capturedInventoryData ?? new InventorySaveData()
         };
 
         SaveSystem.Save(data);
+    }
+
+    private void HandlePlayerDataCaptured(PlayerSaveData playerData)
+    {
+        playerDataWasCaptured = true;
+        capturedPlayerData = playerData;
+    }
+
+    private void HandleInventoryDataCaptured(InventorySaveData inventoryData)
+    {
+        capturedInventoryData = inventoryData;
     }
 }
