@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ecad2c7227648b4faa40d67a395d4ea, type: 3}
   m_Name: DebugItemMaterial
   m_EditorClassIdentifier: Assembly-CSharp::MaterialData
+  itemId: Crystal
   itemName: Crystal
   icon: {fileID: 21300000, guid: a277e964734b6e241898807a41b14266, type: 3}
   maxStackSize: 2
