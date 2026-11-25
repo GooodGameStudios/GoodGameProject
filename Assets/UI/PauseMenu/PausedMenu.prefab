@@ -202,7 +202,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Load last save
+  m_text: Save
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 524301034b5c2384a992aae9ee22d060, type: 2}
   m_sharedMaterial: {fileID: -2297207964124827722, guid: 524301034b5c2384a992aae9ee22d060, type: 2}
@@ -692,6 +692,7 @@ GameObject:
   - component: {fileID: 2010963973747256909}
   - component: {fileID: 3669183619916213156}
   - component: {fileID: 2784977843282731901}
+  - component: {fileID: 7048819911486129257}
   m_Layer: 5
   m_Name: PausedMenu
   m_TagString: Untagged
@@ -761,6 +762,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &7048819911486129257
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5932692369671371505}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e43f585121b76344aa80461653ff83e0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameSaver
+  playerSaveDataProvider: {fileID: 0}
 --- !u!1 &5971988541359373410
 GameObject:
   m_ObjectHideFlags: 0
@@ -907,7 +921,7 @@ GameObject:
   - component: {fileID: 4059462089748499519}
   - component: {fileID: 7111725375051174465}
   m_Layer: 5
-  m_Name: Load
+  m_Name: Save
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1015,9 +1029,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: PauseMenu, Assembly-CSharp
-        m_MethodName: LoadLastSave
+      - m_Target: {fileID: 7048819911486129257}
+        m_TargetAssemblyTypeName: GameSaver, Assembly-CSharp
+        m_MethodName: SaveGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
