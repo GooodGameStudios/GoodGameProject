@@ -26,6 +26,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float dashCooldown = 1.0f;
     [SerializeField] private float dashStaminaCost = 15.0f;
 
+    [Header("Mantling")]
+    [SerializeField] private float mantleDuration = 0.20f;
+    [SerializeField] private float mantleMaxHeight = 1.5f;
+    [SerializeField] private float mantleMinHeight = 0.4f;
+    [SerializeField] private float mantleForwardDistance = 0.3f;
+
     private PlayerStamina stamina;
 
     private Vector2 moveInput;
@@ -44,7 +50,14 @@ public class PlayerMovement : MonoBehaviour
     private float dashTimer;
     private float nextDashTime;
 
-    // Do bobbingu
+    private bool isMantling;
+    private float mantleTimer;
+
+    private Vector3 mantleStartPosition;
+    private Vector3 mantleEndPosition;
+    private Vector3 mantleControlPoint;
+
+    //Do bobbingu
     public bool IsMoving => moveInput.magnitude > 0.1f;
 
     private float verticalVelocity;
@@ -68,6 +81,11 @@ public class PlayerMovement : MonoBehaviour
         {
             isRunning = false;
         }
+        if (isMantling)
+        {
+            MantleMovement();
+            return;
+        }
 
         if (isClimbing)
         {
@@ -80,13 +98,16 @@ public class PlayerMovement : MonoBehaviour
                 return;
             }
 
-            if (!IsStillTouchingWall())
-            {
-                isClimbing = false;
-                return;
-            }
+        if (moveInput.y > 0.1f && TryStartMantle())
+            return;
 
-            ClimbingMovement();
+        if (!IsStillTouchingWall())
+        {
+            isClimbing = false;
+            return;
+        }
+
+        ClimbingMovement();
         }
         else
         {
@@ -142,7 +163,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    // Dashuje trigger
+    //Dashuje trigger
     public void OnDash(InputAction.CallbackContext context)
     {
         if (context.performed)
@@ -154,24 +175,26 @@ public class PlayerMovement : MonoBehaviour
     ///stait upbullshit
     private void TryStartDash()
     {
-        if (isDashing || isClimbing)
+        if (isDashing || isClimbing || Time.time < nextDashTime)
             return;
 
-        if (Time.time < nextDashTime)
-            return;
+        Vector3 direction;
 
-        Vector3 direction = GetDashDirection();
+        if (moveInput.sqrMagnitude < 0.01f)
+            direction = transform.forward;
+        else if (Mathf.Abs(moveInput.y) >= Mathf.Abs(moveInput.x))
+            direction = moveInput.y > 0 ? transform.forward : -transform.forward;
+        else
+            direction = moveInput.x > 0 ? transform.right : -transform.right;
 
-        if (direction == Vector3.zero)
-            return;
+        direction.y = 0f;
 
         if (!stamina.UseStamina(dashStaminaCost))
             return;
 
-        dashDirection = direction;
+        dashDirection = direction.normalized;
         dashTimer = 0f;
         isDashing = true;
-
         nextDashTime = Time.time + dashCooldown;
     }
 
@@ -194,25 +217,19 @@ public class PlayerMovement : MonoBehaviour
                 ? transform.right
                 : -transform.right;
         }
-
         direction.y = 0f;
         return direction.normalized;
     }
 
-    // Actually wykonuje dasha
     private void DashMovement()
     {
-        dashTimer += Time.deltaTime;
-
         controller.Move(dashDirection * dashSpeed * Time.deltaTime);
 
-        if (dashTimer >= dashDuration)
-        {
+        if ((dashTimer += Time.deltaTime) >= dashDuration)
             isDashing = false;
-        }
     }
 
-    // Wykrywa dotykaną ścianę
+    //Wykrywa dotykaną ścianę
     private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         if (isClimbing || stamina.CurrentStamina <= 0f || isDashing)
@@ -231,7 +248,7 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
-    // Skok ze ściany
+    //Skok ze ściany
     private void WallJump()
     {
         if (!stamina.UseStamina(staminaJumpDrain))
@@ -280,7 +297,7 @@ public class PlayerMovement : MonoBehaviour
         );
     }
 
-    // Grawitacja
+    //Grawitacja
     private void ApplyGravity()
     {
         if (isGrounded && verticalVelocity < 0f)
@@ -303,7 +320,7 @@ public class PlayerMovement : MonoBehaviour
         controller.Move(Vector3.up * verticalVelocity * Time.deltaTime);
     }
 
-    // Poruszanie się po ścianie
+    //Poruszanie się po ścianie
     private void ClimbingMovement()
     {
         Vector3 verticalDirection = Vector3.up * moveInput.y;
@@ -332,5 +349,59 @@ public class PlayerMovement : MonoBehaviour
             climbableLayer,
             QueryTriggerInteraction.Ignore
         );
+    }
+
+    private bool TryStartMantle()
+    {
+        Vector3 forward = -climbWallNormal;
+        forward.y = 0f;
+        forward.Normalize();
+
+        Vector3 origin = transform.position + Vector3.up * (controller.height * 0.85f);
+
+        if (Physics.Raycast(origin, forward, controller.radius + mantleForwardDistance, climbableLayer))
+            return false;
+
+        origin = transform.position + Vector3.up * (controller.height + mantleMaxHeight) + forward * (controller.radius + mantleForwardDistance);
+
+        if (!Physics.Raycast(origin, Vector3.down, out RaycastHit hit,
+            controller.height + mantleMaxHeight + 0.5f, ~0))
+            return false;
+
+        float height = hit.point.y - transform.position.y;
+
+        if (height < mantleMinHeight || height > mantleMaxHeight || hit.normal.y < 0.7f)
+            return false;
+
+        mantleStartPosition = transform.position;
+        mantleEndPosition = hit.point - forward * (controller.radius * 0.5f);
+        mantleEndPosition.y = hit.point.y + 0.03f;
+        mantleControlPoint = (mantleStartPosition + mantleEndPosition) * 0.5f + Vector3.up * 0.5f;
+
+        mantleTimer = 0f;
+        isMantling = true;
+        isClimbing = false;
+        verticalVelocity = 0f;
+        controller.enabled = false;
+
+        return true;
+    }
+
+    private void MantleMovement()
+    {
+        mantleTimer += Time.deltaTime;
+        float t = Mathf.SmoothStep(0f, 1f, Mathf.Clamp01(mantleTimer / mantleDuration));
+
+        transform.position =
+            (1f - t) * (1f - t) * mantleStartPosition +
+            2f * (1f - t) * t * mantleControlPoint +
+            t * t * mantleEndPosition;
+
+        if (t < 1f) return;
+
+        transform.position = mantleEndPosition;
+        isMantling = false;
+        controller.enabled = true;
+        verticalVelocity = -2f;
     }
 }
