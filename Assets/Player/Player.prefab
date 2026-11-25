@@ -607,12 +607,16 @@ MonoBehaviour:
     m_Bits: 64
   climbSpeed: 3
   wallStickDistance: 0.5
-  wallJumpForce: 5
-  staminaJumpDrain: 15
-  dashSpeed: 15
+  wallJumpForce: 7
+  staminaJumpDrain: 5
+  dashSpeed: 30
   dashDuration: 0.2
-  dashCooldown: 1
+  dashCooldown: 0.2
   dashStaminaCost: 15
+  mantleDuration: 0.2
+  mantleMaxHeight: 1.5
+  mantleMinHeight: 0.4
+  mantleForwardDistance: 0.3
   isRunning: 0
 --- !u!114 &-3917837852949481566
 MonoBehaviour:
